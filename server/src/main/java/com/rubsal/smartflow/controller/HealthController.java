@@ -20,10 +20,4 @@ public class HealthController {
         return "Hello, from Smartflow by RubSal!";
     }
 
-
-
-
-
-
-
 }
