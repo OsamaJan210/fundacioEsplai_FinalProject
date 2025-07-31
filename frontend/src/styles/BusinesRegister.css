@@ -1,0 +1,122 @@
+.register-page {
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    width: 90%;
+    min-height: 100vh;
+}
+
+.register-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    box-shadow: 1 3px 10px rgba(0, 0, 0, 0.1);
+    border: 1.5px solid #007bff;
+    align-items: center;
+    justify-items: center;
+}
+
+.register-page h1 {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #333;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #ddd;
+    border-radius: 6px;
+    padding: 0.4rem 0.65rem;
+    transition: border-color 0.3s ease;
+    background: #fafafa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-bottom: 0.5rem;
+    height: 38px;
+    width: 95%;
+}
+
+.select {
+    width: 100%;
+    font-size: 14px;
+    z-index: 10;
+}
+
+.select>div {
+    height: 38px;
+}
+
+
+.input-group:hover,
+.input-group:focus-within {
+    border-color: #007bff;
+}
+
+.icon {
+    color: #007bff;
+    margin-right: 0.8rem;
+    min-width: 22px;
+    min-height: 22px;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    flex-grow: 1;
+    font-size: 1rem;
+    background: transparent;
+    padding: 0.3rem 0;
+}
+
+.input-group input::placeholder {
+    color: #aaa;
+}
+
+.login-text {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 2rem;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.error-message {
+    grid-column: 1 / -1;
+    color: #d32f2f;
+    background: #ffe6e6;
+    padding: 0.6rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-top: -0.5rem;
+    text-align: center;
+}
+
+.btn-submit {
+    grid-column: 1 / -1;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 0.85rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+    width: 90%;
+}
+
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}

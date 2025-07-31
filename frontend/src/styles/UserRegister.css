@@ -1,0 +1,28 @@
+.user-register-page{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.user-register-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+    border: 1.5px solid #007bff;
+    background-color: #f8f9fa;
+}
+.user-register-title {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 2rem;
+}
+.user-register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
