@@ -6,7 +6,7 @@ import lombok.*;
 @Entity
 @Table(name = "sf_status")
 @Data
-public class SfStatus {
+public class SfStatus extends BaseWithDateDomain {
 
     @Id
     @Column(name = "id")

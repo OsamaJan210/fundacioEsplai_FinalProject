@@ -56,4 +56,13 @@ public class BusinessServiceImpl implements BusinessService {
             return res.toString();
         }
     }
+    @Override
+    public String isEmailExsist(String email){
+
+        if (sfBusinessRepo.findByEmail(email).size()>0) {
+            return general.buildResponseOutput(Constants.SUCCESS, Constants.EMAIL_EXSIST).toString();
+        }
+        return general.buildResponseOutput(Constants.SUCCESS, Constants.EMAIL_NOT_EXSIST).toString();
+
+    }
 }

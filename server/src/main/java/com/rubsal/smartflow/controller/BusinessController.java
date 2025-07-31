@@ -23,5 +23,9 @@ public class BusinessController {
     public ResponseEntity<String> create(@RequestBody BusinessUserDTO req, HttpHeaders httpHeaders) {
         return new ResponseEntity<String>(businessService.createBusiness(req),HttpStatus.OK);
     }
+    @GetMapping("/isEmailExsist")
+    public ResponseEntity<String> isEmailExsist(@RequestParam String email, HttpHeaders httpHeaders) {
+        return new ResponseEntity<String>(businessService.isEmailExsist(email),HttpStatus.OK);
+    }
     
 }

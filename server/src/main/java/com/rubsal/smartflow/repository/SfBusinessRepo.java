@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.rubsal.smartflow.model.SfBusiness;
 
 public interface SfBusinessRepo  extends JpaRepository<SfBusiness,Integer> {
-    List<SfBusiness> findByEmail(String emailorTaxNumber);
+    List<SfBusiness> findByEmail(String email);
 }

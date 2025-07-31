@@ -7,4 +7,5 @@ import com.rubsal.smartflow.utils.ApiResponse;
 public interface BusinessService {
 
     public String createBusiness(BusinessUserDTO req);
+    public String isEmailExsist(String email);
 }
