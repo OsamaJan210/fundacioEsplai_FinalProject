@@ -4,4 +4,6 @@ import com.rubsal.smartflow.dto.AuthDTO;
 
 public interface UserService {
     public String Auth(AuthDTO req);
+    public String isEmailExsist(String email);
+
 }
