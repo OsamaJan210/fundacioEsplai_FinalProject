@@ -6,9 +6,11 @@ import {
   FaLock,
   FaEye,
   FaEyeSlash,
-  FaUserCircle
+  FaUserCircle,
 } from "react-icons/fa";
 import "../styles/UserRegister.css";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function UserRegister() {
   const navigate = useNavigate();
@@ -21,15 +23,44 @@ export default function UserRegister() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // error general
+  const [emailError, setEmailError] = useState(""); // error específico de email
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-    setError(""); // Limpia errores al escribir
+
+    // Limpiar errores cuando cambie cualquier campo
+    setError("");
+    if (name === "email") {
+      setEmailError("");
+    }
   };
 
-  const handleSubmit = (e) => {
+  const checkEmailExists = async (email) => {
+    try {
+      setIsCheckingEmail(true);
+      const url = `${API_URL}/smartflow-api/V1/User/isEmailExsist?email=${encodeURIComponent(email)}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+
+      setIsCheckingEmail(false);
+      if (data.msg === "email not exsist" && data.erc === "1") {
+        return false; // No existe email, no hay error
+      } else {
+        return true; // Email existe
+      }
+    } catch (error) {
+      setIsCheckingEmail(false);
+      console.error("Error checking email:", error);
+      setError("Error checking email. Please try again later.");
+      return true; 
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validaciones básicas
@@ -42,7 +73,16 @@ export default function UserRegister() {
       setError("Please enter a valid email.");
       return;
     }
-    // Si todo está bien, redirige al dashboard
+
+    // Verificar email en la API
+    const emailExists = await checkEmailExists(form.email);
+
+    if (emailExists) {
+      setEmailError("This email is already registered.");
+      return;
+    }
+
+    // Si todo está bien, redirige al dashboard o siguiente página
     navigate("/dashboard");
   };
 
@@ -51,7 +91,7 @@ export default function UserRegister() {
       <h1>Business Essential</h1>
       <div className="user-register-card">
         <form onSubmit={handleSubmit} className="user-register-form">
-          <div className="input-group">
+          <div className="input-group-register">
             <FaUser className="icon" />
             <input
               name="username"
@@ -63,7 +103,7 @@ export default function UserRegister() {
             />
           </div>
 
-          <div className="input-group">
+          <div className="input-group-register">
             <FaUserCircle className="icon" />
             <input
               name="fullName"
@@ -75,7 +115,7 @@ export default function UserRegister() {
             />
           </div>
 
-          <div className="input-group">
+          <div className="input-group-register">
             <FaEnvelope className="icon" />
             <input
               name="email"
@@ -84,10 +124,14 @@ export default function UserRegister() {
               value={form.email}
               onChange={handleChange}
               required
+              disabled={isCheckingEmail}
             />
           </div>
+          {emailError && (
+            <span className="error-message-register">{emailError}</span>
+          )}
 
-          <div className="input-group password-group">
+          <div className="input-group-register password-group">
             <FaLock className="icon" />
             <input
               name="password"
@@ -105,10 +149,14 @@ export default function UserRegister() {
             </span>
           </div>
 
-          {error && <p className="error-message">{error}</p>}
+          {error && <p className="error-message-register">{error}</p>}
 
-          <button type="submit" className="btn-submit">
-            Register
+          <button
+            type="submit"
+            className="btn-submit-register"
+            disabled={isCheckingEmail}
+          >
+            {isCheckingEmail ? "Checking..." : "Register"}
           </button>
 
           <p className="login-text">
