@@ -42,11 +42,8 @@ export default function UserRegister() {
       setError("Please enter a valid email.");
       return;
     }
-
-    // Aquí puedes hacer la lógica de comprobar si el user ya existe...
-
-    alert("Registered user:\n" + JSON.stringify(form, null, 2));
-    navigate("/"); // o redirige a dashboard, login, etc.
+    // Si todo está bien, redirige al dashboard
+    navigate("/dashboard");
   };
 
   return (

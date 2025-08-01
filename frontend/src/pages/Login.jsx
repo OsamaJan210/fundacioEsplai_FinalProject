@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaEnvelope,
   FaLock,
@@ -7,36 +7,50 @@ import {
   FaEyeSlash,
   FaSignInAlt,
   FaUserPlus,
-} from 'react-icons/fa';
-import '../styles/Login.css';
+} from "react-icons/fa";
+import "../styles/Login.css";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
-  // Simulación de base de datos de usuarios registrados
-  const registeredUsers = ["admin@example.com", "user@test.com", "cliente@demo.com"];
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setError(""); // Limpiar error al escribir
+    setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Verifica si el email está registrado
-    if (!registeredUsers.includes(form.email.toLowerCase())) {
-      setError("User is not registered.");
+    try {
+      const res = await fetch(`${API_URL}/smartflow-api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
+      });
 
-      return;
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
+
+      // Puedes guardar token si te envían alguno, ejemplo:
+      // localStorage.setItem("token", data.token);
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Server error. Please try again later.");
     }
-
-    // Continuar con el inicio de sesión
-    alert(`Bienvenido ${form.email}`);
-    // navigate('/dashboard'); // Redirigir si deseas
   };
 
   return (
@@ -44,13 +58,12 @@ export default function Login() {
       <div className="login-card">
         <h1 className="login-title">Business Essential</h1>
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          {/* Email */}
+        <form onSubmit={handleSubmit} className="login-form">
           <div className="input-group">
             <FaEnvelope className="icon" />
             <input
-              name="email"
               type="email"
+              name="email"
               placeholder="Email"
               value={form.email}
               onChange={handleChange}
@@ -58,26 +71,24 @@ export default function Login() {
             />
           </div>
 
-          {/* Password */}
-          <div className="input-group">
+          <div className="input-group password-group">
             <FaLock className="icon" />
             <input
+              type={showPassword ? "text" : "password"}
               name="password"
-              type={showPassword ? 'text' : 'password'}
               placeholder="Password"
               value={form.password}
               onChange={handleChange}
               required
             />
             <span
-              className="eye-icon"
+              className="toggle-password"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
 
-          {/* Mostrar error si el correo no está registrado */}
           {error && <p className="error-text">{error}</p>}
 
           <button type="submit" className="login-btn-submit">
@@ -85,8 +96,12 @@ export default function Login() {
           </button>
 
           <p className="login-text">
-            <FaUserPlus />{' '}
-            <span className="login-link" onClick={() => navigate('/register')}>
+            <FaUserPlus />{" "}
+            <span
+              className="login-link"
+              onClick={() => navigate("/register")}
+              style={{ cursor: "pointer" }}
+            >
               Don’t have an account? Sign Up
             </span>
           </p>

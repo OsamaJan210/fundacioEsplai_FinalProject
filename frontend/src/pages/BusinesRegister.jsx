@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Country, State, City } from "country-state-city";
 import postalCodesData from "../data/postalCodes.js";
+const API_URL = import.meta.env.VITE_API_URL;
 
 import {
   FaBuilding,
@@ -37,9 +38,7 @@ export default function Register() {
   const [selectedState, setSelectedState] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
   const [error, setError] = useState("");
-
-  // Simulación de correos registrados
-  const registeredEmails = ["test@example.com", "admin@business.com"];
+  const [loading, setLoading] = useState(false);
 
   const countryOptions = Country.getAllCountries().map((c) => ({
     value: c.isoCode,
@@ -48,19 +47,19 @@ export default function Register() {
 
   const stateOptions = selectedCountry
     ? State.getStatesOfCountry(selectedCountry.value).map((s) => ({
-      value: s.isoCode,
-      label: s.name,
-      name: s.name,
-    }))
+        value: s.isoCode,
+        label: s.name,
+        name: s.name,
+      }))
     : [];
 
   const cityOptions = selectedState
     ? City.getCitiesOfState(selectedCountry.value, selectedState.value).map(
-      (c) => ({
-        value: c.name,
-        label: c.name,
-      })
-    )
+        (c) => ({
+          value: c.name,
+          label: c.name,
+        })
+      )
     : [];
 
   const handleChange = (e) => {
@@ -71,6 +70,9 @@ export default function Register() {
       }
     } else {
       setForm({ ...form, [name]: value });
+      if (name === "businessEmail") {
+        setError(""); // limpia error si cambia el email
+      }
     }
   };
 
@@ -89,17 +91,36 @@ export default function Register() {
     }
   }, [selectedCountry, selectedState, selectedCity]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    const emailExists = registeredEmails.includes(
-      form.businessEmail.toLowerCase()
-    );
+    try {
+      const url = `${API_URL}/smartflow-api/V1/Business/isEmailExsist?email=${encodeURIComponent(
+        form.businessEmail
+      )}`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
 
-    if (emailExists) {
-      setError("This email is already registered.");
-    } else {
-      navigate("/registerUser");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      if (data.msg === "email already exsist" && data.erc === "1") {
+        setError("This email is already registered.");
+      } else {
+        navigate("/registerUser");
+      }
+    } catch (error) {
+      setError("Error checking email. Please try again.");
+      console.error("Email check failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -131,6 +152,7 @@ export default function Register() {
               required
             />
           </div>
+          {error && <p className="error-message">{error}</p>}
 
           <div className="input-group">
             <FaPhone className="icon" />
@@ -147,7 +169,6 @@ export default function Register() {
               }}
               required
             />
-
           </div>
 
           <div className="input-group">
@@ -234,10 +255,8 @@ export default function Register() {
               required
             />
           </div>
-          {error && <p className="error-message">{error}</p>}
-
-          <button type="submit" className="btn-submit">
-            Next
+          <button type="submit" className="btn-submit" disabled={loading}>
+            {loading ? "Checking..." : "Next"}
           </button>
           <p className="login-text">
             <span className="login-link" onClick={() => navigate("/")}>
