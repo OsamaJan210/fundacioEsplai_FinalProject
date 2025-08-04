@@ -1,86 +1,21 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.navbar-container {
-  display: flex;
-  height: 100vh;
-}
-
-.sidebar {
-  width: 200px;
-  background-color: #f8f9fa;
-  border-right: 1px solid #ddd;
-  padding-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.sidebar-logo img {
-  width: 100%;
-  height: 50px;
-  margin-bottom: 2rem;
-}
-
-.sidebar-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-  width: 100%;
-  text-align: center;
-}
-
-.sidebar-menu a {
-  text-decoration: none;
-  color: #333;
-  padding: 0.8rem;
-  font-weight: 500;
-  border-radius: 6px;
-  font-size: 1.5rem;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.sidebar-menu a.active {
-  background-color: #007bff;
-  color: white;
-}
-
-.sidebar-menu a:hover {
-  background-color: #f0f0f0;
-  color: #007bff;
-}
-
-.navbar {
-  flex: 1;
+.top-navbar {
   height: 70px;
   background-color: #fff;
-  border-bottom: 1px solid #ddd;
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
-  position: relative;
+  justify-content: space-between;
+  top: 0;
+  z-index: 10;
+  box-sizing: border-box;
+  margin-left: 15rem;
 }
 
-.navbar-section {
-  flex: 1;
+.pos-button-container,
+.welcome-text-container,
+.profile-container {
   display: flex;
   align-items: center;
-}
-
-.navbar-section.left {
-  justify-content: flex-start;
-}
-
-.navbar-section.center {
-  justify-content: center;
-}
-
-.navbar-section.right {
-  justify-content: flex-end;
-  position: relative;
 }
 
 .pos-button {
@@ -90,12 +25,26 @@
   border-radius: 6px;
   text-decoration: none;
   font-weight: 500;
+  transition: background-color 0.3s;
 }
 
-.welcome-text {
-  font-size: 1.5rem;
+.pos-button:hover {
+  background-color: #0056b3;
+}
+
+.welcome-text-container {
+  font-size: 2.3rem;
   font-weight: 600;
   color: #333;
+}
+
+.profile-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-icon {
+  color: #555;
 }
 
 .navbar-dropdown {
@@ -105,68 +54,84 @@
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem;
+  width: 220px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  padding: 1rem;
+}
+
+.dropdown-link {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  z-index: 1000;
-}
-
-.navbar-dropdown a,
-.navbar-dropdown button {
-  background: none;
-  border: none;
-  color: #333;
-  text-align: left;
-  padding: 0.5rem;
-  cursor: pointer;
+  align-items: center;
+  padding: 0.5rem 0;
   text-decoration: none;
+  color: #333;
+  font-weight: 500;
 }
 
-.navbar-dropdown a:hover,
-.navbar-dropdown button:hover {
-  background-color: #f0f0f0;
+.dropdown-link:hover {
+  color: #007bff;
 }
 
 .language-selector {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
   cursor: pointer;
 }
 
-.selector-display {
+
+ .selector-display {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 0.4rem;
+  cursor: pointer;
+  padding: 0.2rem 0;
 }
 
 .flag-icon {
-  width: 20px;
-  height: 20px;
-  border-radius: 2px;
+  width: 25px;
+  height: 25px;
+  border-radius: 3px;
 }
 
 .language-dropdown {
-  margin-top: 10px;
-  position: absolute;
-  right: 0;
-  background-color: white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  z-index: 100;
+  margin-top: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f9f9f9;
 }
 
 .language-option {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
+  gap: 0.6rem;
+  padding: 0.5rem;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .language-option:hover {
-  background-color: #eee;
+  background-color: #e0e7ff;
+}
+
+.logout-button {
+  margin-top: 1rem;
+  width: 100%;
+  background-color: #007bff;
+  border: none; 
+  padding: 0.5rem;
+  color: white;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #0056b3;
 }
