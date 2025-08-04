@@ -18,13 +18,14 @@ import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
-@RequestMapping("/smartflow-api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class AuthController {
     private final UserService userService;
     @PostMapping("/login")
     public ResponseEntity<String> create(@RequestBody AuthDTO req, HttpHeaders httpHeaders) {
+        System.out.println();
         log.info("Service method called using @Slf4j");
         return new ResponseEntity<String>(userService.Auth(req),HttpStatus.OK);
     }

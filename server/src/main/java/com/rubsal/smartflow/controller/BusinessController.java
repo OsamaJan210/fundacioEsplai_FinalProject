@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/smartflow-api/V1/Business")
+@RequestMapping("/smartflow-api/v1/Business")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class BusinessController {
