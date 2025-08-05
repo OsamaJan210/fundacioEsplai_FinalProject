@@ -9,6 +9,7 @@ import Pos from "./pages/Pos";
 import Product from "./pages/Product";
 import SettingsBussines from "./pages/Settings-busines";
 import Settings from "./pages/Settings";
+import Category from "./pages/Category";
 
 import Sidebar from "./components/Sidebar";
 import TopNavbar from "./components/Navbar";
@@ -34,6 +35,7 @@ function AppWrapper() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/pos" element={<Pos />} />
             <Route path="/product" element={<Product />} />
+            <Route path="/category" element={<Category />} />
             <Route path="/settings-busines" element={<SettingsBussines />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>

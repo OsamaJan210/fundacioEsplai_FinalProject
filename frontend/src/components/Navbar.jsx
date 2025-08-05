@@ -9,7 +9,14 @@ export default function TopNavbar() {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [showLanguages, setShowLanguages] = useState(false);
 
-  const handleSignOut = () => navigate("/");
+  const userName = localStorage.getItem("userName") || "User";
+
+  const handleSignOut = () => {
+    localStorage.removeItem("userName");
+    localStorage.removeItem("businessId");
+    localStorage.removeItem("token");
+    navigate("/");
+  };
 
   const changeLanguage = (lang) => {
     if (lang === selectedLanguage) {
@@ -24,14 +31,14 @@ export default function TopNavbar() {
 
   return (
     <nav className="top-navbar">
-      <div className="pos-button-container">    
+      <div className="pos-button-container">
         <Link to="/pos" className="pos-button">
           POS
         </Link>
       </div>
 
       <div className="welcome-text-container">
-        <span>Welcome Aitor</span>
+        <span>Welcome {userName}</span>
       </div>
 
       <div className="profile-container" onClick={() => setShowMenu(!showMenu)}>
