@@ -39,18 +39,23 @@ export default function Login() {
       const data = await res.json();
       console.log("Login response:", data);
 
+      // ❌ Invalid credentials
+      if (data.msg === "Wrong login credentials" || data.erc === "0") {
+        setError("Incorrect email or password. Please try again.");
+        return;
+      }
+
       if (!res.ok) {
         setError(data.message || "Login failed");
         return;
       }
 
-      // ✅ Guardar name y businessId en localStorage
+      // ✅ Save user info
       if (data.name && data.businessId) {
         localStorage.setItem("userName", data.name);
         localStorage.setItem("businessId", data.businessId);
       }
 
-      // (Opcional) guardar token
       if (data.token) {
         localStorage.setItem("token", data.token);
       }
@@ -61,7 +66,6 @@ export default function Login() {
       setError("Server error. Please try again later.");
     }
   };
-
 
   return (
     <div className="login-page">

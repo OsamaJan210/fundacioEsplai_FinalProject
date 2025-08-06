@@ -153,13 +153,12 @@ export default function Category() {
         }
         const payUpdate = {
             id: editCategory.id,
-            name: newCategory.name,
-            description: newCategory.description,
-            businessId,
-            branchId,
+            name: editCategory.name,
+            description: editCategory.description,
         };
+        // console.log("Payload for update:", payUpdate);
         try {
-            const response = await fetch(`${API_URL}/smartflow-api/v1/category/create`, {
+            const response = await fetch(`${API_URL}/smartflow-api/v1/category/update`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
