@@ -59,8 +59,6 @@ export default function Category() {
             console.error("Error fetching categories:", error);
         }
     };
-
-    // ADD CATEGORY
     const handleAdd = () => {
         setNewCategory({ name: "", description: "" });
         setErrorMessage("");
@@ -120,7 +118,6 @@ export default function Category() {
         }
     };
 
-    // EDIT CATEGORY
     const handleEdit = (index) => {
         setEditCategory(categories[index]);
         setEditIndex(index);
@@ -146,24 +143,29 @@ export default function Category() {
             setErrorMessage("Please fill in all fields.");
             return;
         }
-
+        const businessId = parseInt(localStorage.getItem("businessId"));
+        const branchId = businessId;
+        
         const token = localStorage.getItem("token");
         if (!token) {
             setErrorMessage("Missing token.");
             return;
         }
-
+        const payUpdate = {
+            id: editCategory.id,
+            name: newCategory.name,
+            description: newCategory.description,
+            businessId,
+            branchId,
+        };
         try {
-            const response = await fetch(`${API_URL}/smartflow-api/v1/category/update/${editCategory.id}`, {
-                method: "PUT",
+            const response = await fetch(`${API_URL}/smartflow-api/v1/category/create`, {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    name: editCategory.name,
-                    description: editCategory.description,
-                }),
+                body: JSON.stringify(payUpdate),
             });
 
             if (!response.ok) {
@@ -182,8 +184,6 @@ export default function Category() {
         }
     };
 
-
-    // FILTRO
     const filteredCategories = categories.filter((cat) =>
         cat.name.toLowerCase().includes(filter.toLowerCase())
     );
@@ -202,8 +202,6 @@ export default function Category() {
                     Add
                 </button>
             </div>
-
-            {/* Add Modal */}
             {showAddModal && (
                 <div className="modal-overlay">
                     <div className="modal modal-add">
@@ -259,8 +257,6 @@ export default function Category() {
                     </div>
                 </div>
             )}
-
-            {/* Edit Modal */}
             {showEditModal && (
                 <div className="modal-overlay">
                     <div className="modal modal-edit">
@@ -355,32 +351,31 @@ export default function Category() {
                     </div>
                 </div>
             )}
-
-
-
-            {/* Categories Grid */}
             <div className="grid-table">
                 <div className="grid-header">Name</div>
                 <div className="grid-header">Description</div>
                 <div className="grid-header">Actions</div>
-                <div className="category-grid">
-                    {filteredCategories.length > 0 ? (
-                        filteredCategories.map((category, index) => (
-                            <div className="category-card" key={category.id || index}>
-                                <h3>{category.name}</h3>
-                                <p>{category.description}</p>
-                                <div className="category-actions">
-                                    <button className="edit-btn" onClick={() => handleEdit(index)}>
-                                        <FaEdit />
-                                    </button>
-                                </div>
+
+                {filteredCategories.length > 0 ? (
+                    filteredCategories.map((category, index) => (
+                        <React.Fragment key={category.id || index}>
+                            <div className="grid-cell">{category.name}</div>
+                            <div className="grid-cell">{category.description}</div>
+                            <div className="grid-cell actions">
+                                <button className="edit-btn" onClick={() => handleEdit(index)}>
+                                    <FaEdit /> Edit
+                                </button>
                             </div>
-                        ))
-                    ) : (
-                        <p>No categories found.</p>
-                    )}
-                </div>
+                        </React.Fragment>
+                    ))
+                ) : (
+                    <div className="grid-cell" style={{ gridColumn: '1 / -1' }}>
+                        No categories found.
+                    </div>
+                )}
             </div>
+
+
         </div>
     );
 }
