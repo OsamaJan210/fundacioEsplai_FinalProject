@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Pos.css";
 
-const API_URL = "http://192.168.0.236:8081";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Pos() {
   const navigate = useNavigate();
