@@ -16,7 +16,7 @@ import com.rubsal.smartflow.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/smartflow-api/V1/User")
+@RequestMapping("/smartflow-api/v1/User")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class UserController {

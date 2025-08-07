@@ -27,9 +27,9 @@ public class UserServiceImpl implements UserService {
         try{
             SfUsers user= uSerRepo.findByEmailAndPassword(req.getEmail(),SecurityUtils.encryptMD5(req.getPassword()));
         if(user!=null){
-            String token = jwtUtil.generateToken(user.getUsername());
+            String token = jwtUtil.generateToken(user.getEmail());
 
-        return general.buildResponseLogInOutput(Constants.SUCCESS, Constants.LOGIN_SUCCESSFULL,token,userPermissionRepo.findAllowedScreensByUserId(user.getUserId()).toString()).toString();
+        return general.buildResponseLogInOutput(Constants.SUCCESS, Constants.LOGIN_SUCCESSFULL,token,userPermissionRepo.findAllowedScreensByUserId(user.getUserId()).toString(),user.getFullName(),String.valueOf(user.getBusiness().getBusinessId())).toString();
 
         }
 

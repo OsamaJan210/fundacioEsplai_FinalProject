@@ -8,5 +8,6 @@ import com.rubsal.smartflow.model.SfCategory;
 
 public interface CategoryRepo  extends JpaRepository<SfCategory, Integer>{
     List<SfCategory> findAllById(Integer id);
+    List<SfCategory> findAllByBusinessId(Integer businessId);
 
 }

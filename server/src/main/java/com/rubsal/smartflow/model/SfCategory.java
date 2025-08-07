@@ -2,6 +2,8 @@ package com.rubsal.smartflow.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,10 +20,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SfCategory extends BaseWithDateDomain{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Lob
     @Column(name = "description")
@@ -31,8 +34,8 @@ public class SfCategory extends BaseWithDateDomain{
     private String name;
 
     @Column(name = "business_id", nullable = false)
-    private Long businessId;
+    private Integer businessId;
 
     @Column(name = "branch_id", nullable = false)
-    private Long branchId;
+    private Integer branchId;
 }

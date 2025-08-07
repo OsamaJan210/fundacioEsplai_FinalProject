@@ -1,5 +1,9 @@
 package com.rubsal.smartflow.model;
 
+import java.math.BigDecimal;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,17 +23,18 @@ import lombok.NoArgsConstructor;
 @Data 
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SfProduct extends BaseWithDateDomain {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "business_id", nullable = false)
-    private Long businessId;
+    private Integer businessId;
 
     @Column(name = "branch_id", nullable = false)
-    private Long branchId;
+    private Integer branchId;
 
     @Column(name = "name", nullable = false, length = 255)
     private String name;
@@ -39,10 +44,10 @@ public class SfProduct extends BaseWithDateDomain {
     private String description;
 
     @Column(name = "price", nullable = false)
-    private int price;
+    private BigDecimal price;
 
     @Column(name = "tax_amount", nullable = false)
-    private int taxAmount;
+    private BigDecimal taxAmount;
 
     @Column(name = "selling_unit", nullable = false, length = 50)
     private String sellingUnit;

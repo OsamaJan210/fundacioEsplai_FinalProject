@@ -28,14 +28,18 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> create(@RequestBody SfCategory req, HttpHeaders httpHeaders) {
+    public ResponseEntity<String> create(@RequestBody SfCategory req) {
         return new ResponseEntity<String>(categoryService.createCategory(req),HttpStatus.OK);
     }
+    @PostMapping("/update")
+    public ResponseEntity<String> update(@RequestBody SfCategory req) {
+        
+        return new ResponseEntity<String>(categoryService.updateCategory(req),HttpStatus.OK);
+    }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<String> getAll(HttpHeaders httpHeaders,HttpServletRequest request) {
-        System.out.println(request.getAttribute("businessId"));
-        return new ResponseEntity<String>(categoryService.gatAllCategory(),HttpStatus.OK);
+    @GetMapping("/getAll/{businessid}")
+    public ResponseEntity<String> getAll(@PathVariable("businessid") Integer id,HttpHeaders httpHeaders) {
+        return new ResponseEntity<String>(categoryService.gatAllCategory(id),HttpStatus.OK);
     }
     @GetMapping("/get/{id}")
     public ResponseEntity<String> getById(@PathVariable("id") Integer id,HttpHeaders httpHeaders) {

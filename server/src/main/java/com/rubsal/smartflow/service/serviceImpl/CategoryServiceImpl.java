@@ -34,8 +34,29 @@ public class CategoryServiceImpl implements CategoryService  {
 
     }
     @Override
-    public String gatAllCategory(){
-        List<SfCategory> category=categoryRepo.findAll();
+    public String updateCategory(SfCategory req){
+        try{
+            List<SfCategory> category=categoryRepo.findAllById(req.getId());
+           if(category.size()>0){
+            SfCategory local=category.get(0);
+            local.setName(req.getName());
+            local.setDescription(req.getDescription());
+
+            categoryRepo.save(local);
+            return general.buildResponseOutput(Constants.SUCCESS, Constants.TRANSACTION_SUCCESSFUL).toString();
+           }
+           return general.buildResponseOutput(Constants.SUCCESS, Constants.TRANSACTION_NOT_SUCCESSFUL).toString();
+
+
+        }catch(Exception ex){
+        return general.buildResponseOutput(Constants.FAIL, ex.getMessage()).toString();
+
+        }
+
+    }
+    @Override
+    public String gatAllCategory(Integer id){
+        List<SfCategory> category=categoryRepo.findAllByBusinessId(id);
         return general.buildResponseObject(category).toString();
 
     }

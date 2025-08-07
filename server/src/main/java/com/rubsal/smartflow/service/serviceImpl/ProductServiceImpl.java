@@ -28,12 +28,45 @@ public class ProductServiceImpl implements ProductService{
 
         }
     }
-    // @Override
-    // public String getallByCategory(Integer id){
-    //     List<SfCategory> category=categoryRepo.findAllById(id);
-    //     return general.buildResponseObject(category).toString();
+    @Override
+    public String updateProduct(SfProduct req){
+        try{
+        List<SfProduct> local=productRepo.findAllById(req.getId());
+        System.out.println("Osama JAn 35"+local.size());
+        if (local.size()>0) {
+            ;
+            req.setBranchId(local.get(0).getBranchId());
+            req.setBusinessId(local.get(0).getBusinessId());
+        }
 
-    // }
+            productRepo.save(req);
+            return general.buildResponseOutput(Constants.SUCCESS, Constants.TRANSACTION_SUCCESSFUL).toString();
+
+        }catch(Exception ex){
+        return general.buildResponseOutput(Constants.FAIL, ex.getMessage()).toString();
+
+        }
+    }
+    @Override
+    public List<SfProduct> getallByCategory(Integer id){
+        List<SfProduct> local=productRepo.findAllByCategoryId(id);
+        return local;
+
+    }
+    @Override
+    public List<SfProduct> gatAllProduct(Integer id){
+        List<SfProduct> products=productRepo.findAllByBusinessId(id);
+        System.out.println("Osama Heere"+products.size());
+        return products;
+
+    }
+    @Override
+    public List<SfProduct> getById(Integer id){
+        List<SfProduct> local=productRepo.findAllById(id);
+        System.out.println("OSama Here "+local.size());
+        return local;
+
+    }
 
     
 }
