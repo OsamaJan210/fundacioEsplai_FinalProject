@@ -1,0 +1,236 @@
+.category-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  margin-left: 13rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.header input {
+  flex: 1;
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-btn {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.add-btn:hover {
+  background-color: #0056b3;
+}
+
+.grid-table {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.grid-header {
+  font-weight: bold;
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-bottom: 2px solid #ddd;
+}
+
+.grid-cell {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  min-height: 70px;
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+
+.actions button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.actions button:hover {
+  opacity: 0.9;
+}
+
+.actions button {
+  background-color: #ffc107;
+  color: #333;
+}
+
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  background-color: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #333;
+}
+
+.modal input,
+.modal textarea {
+  width: 90%;
+  margin-bottom: 12px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.modal textarea {
+  resize: vertical;
+  height: 80px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.modal-buttons button:not(.cancel) {
+  background-color: #007bff;
+  color: white;
+}
+
+.modal-buttons .cancel {
+  background-color: #ccc;
+}
+/* Overlay general */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Estilos base modal */
+.modal {
+  background: white;
+  border-radius: 6px;
+  padding: 20px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+/* Modales específicos para evitar choque */
+
+.modal-add {
+  /* estilos únicos para modal agregar */
+  /* por ejemplo, color de borde diferente */
+  border: 2px solid #007bff;
+}
+
+.modal-edit {
+  /* estilos únicos para modal editar */
+  border: 2px solid #007bff;
+}
+
+.modal-delete {
+  /* estilos únicos para modal eliminar */
+  border: 2px solid #dc3545;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.modal-buttons button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-buttons button.cancel {
+  background-color: #ccc;
+  color: #333;
+}
+
+.modal-buttons button:hover {
+  opacity: 0.9;
+}
+
