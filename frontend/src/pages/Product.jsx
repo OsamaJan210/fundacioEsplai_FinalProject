@@ -195,7 +195,6 @@ export default function ProductPage() {
     }));
   };
 
-  // Editar producto (ejemplo básico, adapta según API)
   const handleEditProduct = (e) => {
     e.preventDefault();
 
@@ -210,8 +209,11 @@ export default function ProductPage() {
       id: productForm.id, 
     };
     console.log("Payload to update product:", payload);
+    console.log("Token:", localStorage.getItem("token"));
+    
 
-    fetch(`${API_URL}/smartflow-api/v1/product/update/`, {
+
+    fetch(`${API_URL}/smartflow-api/v1/product/update`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
