@@ -99,7 +99,7 @@ export default function Login() {
               className="toggle-password"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              {showPassword ? < FaEye/> : <FaEyeSlash />}
             </span>
           </div>
 

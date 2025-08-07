@@ -156,7 +156,7 @@ export default function Category() {
             name: editCategory.name,
             description: editCategory.description,
         };
-        // console.log("Payload for update:", payUpdate);
+         console.log("Payload for update:", payUpdate);
         try {
             const response = await fetch(`${API_URL}/smartflow-api/v1/category/update`, {
                 method: "POST",
