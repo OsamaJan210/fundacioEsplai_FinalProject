@@ -83,7 +83,7 @@ export default function UserRegister() {
     }
 
     // Si todo está bien, redirige al dashboard o siguiente página
-    navigate("/dashboard");
+    navigate("/login");
   };
 
   return (

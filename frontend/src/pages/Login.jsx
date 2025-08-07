@@ -27,7 +27,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${API_URL}/smartflow-api/auth/login`, {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -37,14 +37,28 @@ export default function Login() {
       });
 
       const data = await res.json();
+      console.log("Login response:", data);
+
+      // ❌ Invalid credentials
+      if (data.msg === "Wrong login credentials" || data.erc === "0") {
+        setError("Incorrect email or password. Please try again.");
+        return;
+      }
 
       if (!res.ok) {
         setError(data.message || "Login failed");
         return;
       }
 
-      // Puedes guardar token si te envían alguno, ejemplo:
-      // localStorage.setItem("token", data.token);
+      // ✅ Save user info
+      if (data.name && data.businessId) {
+        localStorage.setItem("userName", data.name);
+        localStorage.setItem("businessId", data.businessId);
+      }
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
 
       navigate("/dashboard");
     } catch (err) {
