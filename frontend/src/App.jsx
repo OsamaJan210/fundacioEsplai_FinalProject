@@ -18,7 +18,8 @@ import "./i18n";
 
 function AppWrapper() {
   const location = useLocation();
-  const hideNavbarRoutes = ["/", "/register", "/registerUser"];
+  // Agregamos "/pos" a las rutas donde ocultamos Navbar y Sidebar
+  const hideNavbarRoutes = ["/", "/register", "/registerUser", "/pos"];
 
   return (
     <div className="app-container">
