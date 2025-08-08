@@ -22,10 +22,13 @@ public class SfSales extends BaseWithDateDomain {
     private Integer saleId;
 
     @Column(name = "cashier_id", nullable = false)
-    private Long cashierId;
+    private Integer cashierId;
 
     @Column(name = "customer_id")
-    private Long customerId; 
+    private Integer customerId; 
+
+    @Column(name = "business_id")
+    private Integer businessId; 
 
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;

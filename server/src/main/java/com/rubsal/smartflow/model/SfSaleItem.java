@@ -28,13 +28,10 @@ public class SfSaleItem {
     private SfSales sale;
 
     @Column(name = "product_id", nullable = false)
-    private Long productId;
-
-    @Column(name = "product_name", nullable = false, length = 255)
-    private String productName;
+    private Integer productId;
 
     @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    private BigDecimal quantity;
 
     @Column(name = "unit_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;

@@ -45,6 +45,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             System.out.println(users.size());
             if (users.size() > 0) {
                 response.setHeader("userId", String.valueOf(users.get(0).getUserId()));
+                response.setHeader("businessId", String.valueOf(users.get(0).getBusiness().getBusinessId()));
+
 
             }
         }
