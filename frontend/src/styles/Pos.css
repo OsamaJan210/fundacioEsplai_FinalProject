@@ -1,0 +1,383 @@
+.pos-container {
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  height: 100%;
+}
+
+.pos-main {
+  display: flex;
+  gap: 15px;
+}
+
+/* Sidebar */
+.sidebar-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 120px;
+}
+
+.sidebar-btn {
+  padding: 10px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background-color: white;
+  transition: background-color 0.2s;
+}
+
+.sidebar-btn:hover:not(.disabled-btn) {
+  background-color: #eee;
+}
+
+.disabled-btn {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Orders panel */
+.orders-panel {
+  display: flex;
+  flex-direction: column;
+  height: 88vh;
+  width: 300px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+}
+
+.order-summary {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.order-header-grid,
+.order-item-grid {
+  display: grid;
+  grid-template-columns: 50px 1fr 100px; /* ancho fijo para Q y $ y el resto para el nombre */
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.order-header-grid {
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 8px;
+}
+
+.order-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.order-item-grid {
+  border-bottom: 1px solid #eee;
+}
+
+.quantity,
+.quantity-header {
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+}
+
+.product-name,
+.product-name-header {
+  white-space: normal;
+  word-wrap: break-word;
+  font-weight: 500;
+  color: #222;
+}
+
+.price,
+.price-header {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  font-weight: 600;
+  color: #007bff;
+}
+
+
+
+.balance-and-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+  height: 60px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+.balance-row {
+  color: red;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.order-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.settle-btn,
+.close-btn-pos {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  transition: background-color 0.3s;
+  flex: 1;
+  max-width: 150px;
+  color: white;
+}
+
+.balance-outside {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  font-weight: bold;
+  font-size: 16px;
+  color: red;
+  margin-bottom: 20px;
+}
+
+.settle-btn {
+  background-color: #4caf50;
+}
+
+.settle-btn:hover {
+  background-color: #45a049;
+}
+
+.close-btn-pos {
+  background-color: #c52a2a;
+}
+
+.close-btn-pos:hover {
+  background-color: #913c3c;
+}
+
+.categories-products-keypad {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 92vh;
+}
+
+/* Buscador */
+.search-bar {
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px 30px 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 16px;
+  color: #999;
+}
+
+.cat-prod-keypad-container {
+  display: flex;
+  gap: 15px;
+  height: 110vh;
+}
+
+.categories-list-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 200px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #fff3e0;
+  overflow-y: auto;
+}
+
+.category-btn {
+  background-color: orange;
+  color: black;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  text-align: left;
+}
+
+.category-btn:hover {
+  background-color: #e67e22;
+}
+
+.selected-category {
+  background-color: #ffa500;
+  color: white;
+}
+
+.no-results {
+  color: #999;
+  font-style: italic;
+  padding: 10px;
+}
+
+
+.products-and-keypad {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.products-grid {
+  flex: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 6px;
+  background-color: #eae8f5;
+  margin-bottom: 10px;
+  height: 80vh;
+}
+
+.product-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 0.2s;
+  height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.product-btn:hover {
+  background-color: #0056b3;
+}
+
+.keypad-container {
+  flex: 6;
+  min-height: 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 12px;
+  background-color: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.keypad-input-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.keypad-input {
+  flex: 1;
+  padding: 3px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.keypad-actions-right {
+  display: flex;
+  gap: 5px;
+}
+
+.keypad-btn {
+  padding: 8px;
+  cursor: pointer;
+  border: none;
+  font-size: 14px;
+  border-radius: 4px;
+  background-color: #f4f3f3;
+  transition: background-color 0.2s;
+  border: 1px solid #ccc;
+  width: 40px;
+}
+
+.keypad-btn:hover {
+  background-color: #bbb;
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.key {
+  padding: 15px 0;
+  width: 150px;
+  height: 35px;
+}
+
+.global-search-bar {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.global-search-bar input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.category-search-bar,
+.product-search-bar {
+  margin-bottom: 10px;
+}
+
+.category-search-bar input,
+.product-search-bar input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.categories-section {
+  display: flex;
+  flex-direction: column;
+}
