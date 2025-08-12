@@ -1,0 +1,240 @@
+.company-page-container {
+  font-family: Arial, sans-serif;
+  padding: 20px 30px;
+  max-width: 900px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.1);
+  margin-left: 220px;
+  position: relative;
+}
+
+.company-page-container .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.company-page-container .company-info-columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 25px;
+}
+
+.company-page-container .left-column,
+.company-page-container .right-column {
+  flex: 1;
+}
+
+.company-page-container .left-column p,
+.company-page-container .right-column p {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.company-page-container .company-name {
+  font-size: 3.2rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+  color: #0b3d91;
+}
+
+.company-page-container .company-info-section h2,
+.company-page-container .users-section h2 {
+  font-weight: 700;
+  font-size: 1.7rem;
+  margin-bottom: 18px;
+  color: #0b3d91;
+}
+
+.company-page-container input[type="text"],
+.company-page-container input[type="email"] {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 280px;
+  transition: border-color 0.3s ease;
+}
+
+.company-page-container input[type="text"]:focus,
+.company-page-container input[type="email"]:focus {
+  border-color: #0b3d91;
+  outline: none;
+}
+
+.company-page-container .btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-right: 10px;
+  transition: background-color 0.3s ease, box-shadow 0.2s ease;
+  user-select: none;
+}
+
+.company-page-container .btn:hover:not(:disabled) {
+  filter: brightness(0.9);
+  box-shadow: 0 0 8px rgba(11, 61, 145, 0.4);
+}
+
+.company-page-container .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.company-page-container .edit-btn {
+  background-color: #ffc107;
+  color: white;
+}
+
+.company-page-container .save-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.company-page-container .cancel-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.company-page-container .create-btn {
+  background-color: #007bff;
+  color: white;
+  margin-bottom: 15px;
+}
+
+/* Tabla usuarios estilo grid */
+.company-page-container .grid-table-company {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-radius: 6px;
+  overflow: hidden;
+  gap: 10px;
+}
+
+.company-page-container .grid-header-company {
+  font-weight: bold;
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-bottom: 2px solid #ddd;
+}
+
+.company-page-container .grid-cell-company {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  min-height: 70px;
+  padding: 0 10px;
+}
+
+.company-page-container .edit-btn-company {
+  background-color: #ffc107;
+  color: #333;
+  padding: 10px 18px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Modal backdrop */
+.company-page-container .modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  width: 100%;
+}
+
+/* Modal content */
+.company-page-container .modal-content-company {
+  background: white;
+  padding: 30px 35px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border: 2px solid #007bff;
+  width: 120vh;
+  margin-left: 150px;
+}
+
+/* Modal header */
+.company-page-container .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.company-page-container .modal-close-btn,
+.company-page-container .close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.company-page-container .modal-close-btn:hover,
+.company-page-container .close-btn:hover {
+  color: #0b3d91;
+}
+
+/* Inputs dentro del modal */
+.company-page-container .modal-content input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #0b3d91;
+  font-size: 1rem;
+  outline-offset: 2px;
+  width: 100%;
+}
+
+/* Grid para los inputs del modal en dos columnas */
+.company-page-container .modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 20px;
+}
+
+.company-page-container .modal-grid label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.company-page-container .modal-grid input:focus {
+  border-color: #0056b3;
+}
+
+/* Form buttons container */
+.company-page-container .form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 12px;
+}
+
+.company-page-container .form-buttons .btn {
+  margin-left: 10px;
+}
