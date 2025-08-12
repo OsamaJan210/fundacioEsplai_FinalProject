@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import { FaEdit, FaSave, FaTimes, FaEye, FaEyeSlash } from "react-icons/fa";
 import "../styles/Settings-busines.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -28,6 +28,21 @@ export default function CompanyPage() {
   const [users, setUsers] = useState([]);
   const [modalMode, setModalMode] = useState(null);
   const [companyForm, setCompanyForm] = useState({ address: "", phone: "" });
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Form state for Add User modal
+  const [newUserForm, setNewUserForm] = useState({
+    username: "",
+    email: "",
+    password: "",
+    fullName: "",
+    permissions: [],
+  });
+
+  const permissionsList = ["Product", "Settings", "POS", "Dashboard"];
+
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [emailError, setEmailError] = useState("");
 
   useEffect(() => {
     const businessId = localStorage.getItem("businessId");
@@ -40,13 +55,16 @@ export default function CompanyPage() {
 
     const fetchCompany = async () => {
       try {
-        const response = await fetch(`${API_URL}/smartflow-api/v1/business/get/${businessId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `${API_URL}/smartflow-api/v1/business/get/${businessId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) throw new Error("Failed to fetch company info");
 
@@ -107,6 +125,128 @@ export default function CompanyPage() {
     setModalMode(null);
   };
 
+  const openAddUserModal = () => {
+    setNewUserForm({
+      username: "",
+      email: "",
+      password: "",
+      fullName: "",
+      permissions: [],
+    });
+    setShowPassword(false);
+    setEmailError("");
+    setModalMode("addUser");
+  };
+
+  const handleNewUserChange = (e) => {
+    const { name, value } = e.target;
+    setNewUserForm((prev) => ({ ...prev, [name]: value }));
+    if (name === "email") setEmailError("");
+  };
+
+  const togglePermission = (perm) => {
+    setNewUserForm((prev) => {
+      const hasPerm = prev.permissions.includes(perm);
+      if (hasPerm) {
+        return { ...prev, permissions: prev.permissions.filter((p) => p !== perm) };
+      } else {
+        return { ...prev, permissions: [...prev.permissions, perm] };
+      }
+    });
+  };
+
+  const checkEmailExists = async (email) => {
+    try {
+      setIsCheckingEmail(true);
+      setEmailError("");
+      const token = localStorage.getItem("token");
+
+      const url = `${API_URL.replace(/\/$/, "")}/auth/isEmailExsistUser?email=${encodeURIComponent(email)}`;
+
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error(`HTTP error! status: ${response.status}, body: ${text}`);
+        setEmailError("Error al verificar el correo.");
+        setIsCheckingEmail(false);
+        return { exists: true, msg: null };
+      }
+
+      const data = await response.json();
+      setIsCheckingEmail(false);
+
+      return data;
+    } catch (error) {
+      setIsCheckingEmail(false);
+      console.error("Error checking email:", error);
+      setEmailError("Error al verificar el correo. Intenta más tarde.");
+      return { exists: true, msg: null };
+    }
+  };
+
+  const saveNewUser = async () => {
+    setEmailError("");
+    if (!newUserForm.email) {
+      setEmailError("Email is required");
+      return;
+    }
+
+    const data = await checkEmailExists(newUserForm.email);
+
+    if (data.msg && data.msg.toLowerCase().includes("email not exsist")) {
+      // Email no existe, creamos usuario
+      const businessId = localStorage.getItem("businessId");
+      const token = localStorage.getItem("token");
+
+      if (!businessId || !token) {
+        return;
+      }
+
+      const payload = {
+        businessId: Number(businessId),
+        name: newUserForm.fullName || newUserForm.username,
+        username: newUserForm.username,
+        email: newUserForm.email,
+        password: newUserForm.password,
+        permission: permissionsList.map((screenName) => ({
+          screenName,
+          allowed: newUserForm.permissions.includes(screenName),
+        })),
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/smartflow-api/v1/user/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Error creating user");
+        }
+
+        const result = await response.json();
+
+        setUsers((prev) => [...prev, { ...newUserForm, id: result.data?.id || Date.now() }]);
+        setModalMode(null);
+      } catch (error) {
+        console.error("Error creating user:", error);
+      }
+    } else {
+      // Email existe, no crear
+      setEmailError("This email is already registered.");
+    }
+  };
+
   const closeModal = () => {
     setModalMode(null);
   };
@@ -153,7 +293,7 @@ export default function CompanyPage() {
       <section className="users-section">
         <div className="section-header">
           <h2>Users</h2>
-          <button onClick={() => alert("Add user functionality not implemented yet")} className="btn add-btn">
+          <button onClick={openAddUserModal} className="btn add-btn">
             <FaEdit style={{ marginRight: 6 }} /> Add User
           </button>
         </div>
@@ -161,12 +301,11 @@ export default function CompanyPage() {
         <div className="grid-table-company">
           <div className="grid-header-company">Name</div>
           <div className="grid-header-company">Email</div>
-          
 
           {users.length > 0 ? (
             users.map((user, index) => (
               <React.Fragment key={user.id || index}>
-                <div className="grid-cell-company">{user.fullName}</div>
+                <div className="grid-cell-company">{user.fullName || user.username}</div>
                 <div className="grid-cell-company">{user.email}</div>
               </React.Fragment>
             ))
@@ -178,10 +317,13 @@ export default function CompanyPage() {
         </div>
       </section>
 
-
+      {/* Modal Edit Company */}
       {modalMode === "editCompany" && (
         <div className="modal-backdrop" onClick={closeModal}>
-          <div className="modal-content-company" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="modal-content-company company-modal-edit"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="modal-header">
               <h2>
                 <FaEdit style={{ marginRight: "6px" }} /> Edit Company
@@ -203,16 +345,13 @@ export default function CompanyPage() {
               </label>
 
               <label>
-                Email:
-                <input type="email" value={company?.email || ""} disabled />
-              </label>
-
-              <label>
                 Address:
                 <input
                   type="text"
                   value={companyForm.address}
-                  onChange={(e) => setCompanyForm({ ...companyForm, address: e.target.value })}
+                  onChange={(e) =>
+                    setCompanyForm((prev) => ({ ...prev, address: e.target.value }))
+                  }
                 />
               </label>
 
@@ -221,13 +360,111 @@ export default function CompanyPage() {
                 <input
                   type="text"
                   value={companyForm.phone}
-                  onChange={(e) => setCompanyForm({ ...companyForm, phone: e.target.value })}
+                  onChange={(e) => setCompanyForm((prev) => ({ ...prev, phone: e.target.value }))}
                 />
               </label>
             </div>
 
             <div className="form-buttons">
               <button onClick={saveCompany} className="btn save-btn">
+                <FaSave style={{ marginRight: 6 }} /> Save
+              </button>
+              <button onClick={closeModal} className="btn cancel-btn">
+                <FaTimes style={{ marginRight: 6 }} /> Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Add User */}
+      {modalMode === "addUser" && (
+        <div className="modal-backdrop" onClick={closeModal}>
+          <div className="company-modal-add" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>
+                <FaEdit style={{ marginRight: "6px" }} /> Add User
+              </h2>
+              <button className="modal-close-btn" onClick={closeModal} aria-label="Close modal">
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="modal-grid">
+              <label>
+                Username:
+                <input
+                  type="text"
+                  name="username"
+                  value={newUserForm.username}
+                  onChange={handleNewUserChange}
+                />
+              </label>
+
+              <label>
+                Email:
+                <input
+                  type="email"
+                  name="email"
+                  value={newUserForm.email}
+                  onChange={handleNewUserChange}
+                />
+                {isCheckingEmail && <small style={{ color: "blue" }}>Verificando...</small>}
+                {emailError && <small style={{ color: "red" }}>{emailError}</small>}
+              </label>
+
+              <label style={{ position: "relative" }}>
+                Password:
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  value={newUserForm.password}
+                  onChange={handleNewUserChange}
+                  required
+                />
+                <span
+                  className="toggle-password"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                  }}
+                >
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
+                </span>
+              </label>
+
+              <label>
+                Full Name:
+                <input
+                  type="text"
+                  name="fullName"
+                  value={newUserForm.fullName}
+                  onChange={handleNewUserChange}
+                />
+              </label>
+
+              <div>
+                <p>Permissions:</p>
+                {permissionsList.map((perm) => (
+                  <label key={perm} style={{ display: "block" }}>
+                    <input
+                      type="checkbox"
+                      checked={newUserForm.permissions.includes(perm)}
+                      onChange={() => togglePermission(perm)}
+                    />{" "}
+                    {perm}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="form-buttons">
+              <button onClick={saveNewUser} className="btn save-btn">
                 <FaSave style={{ marginRight: 6 }} /> Save
               </button>
               <button onClick={closeModal} className="btn cancel-btn">
