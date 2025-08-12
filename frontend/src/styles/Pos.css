@@ -16,6 +16,7 @@
   flex-direction: column;
   gap: 10px;
   min-width: 120px;
+  margin-top: 60px;
 }
 
 .sidebar-btn {
@@ -78,7 +79,12 @@
   border-bottom: 1px solid #eee;
 }
 
-.quantity,
+.quantity {
+  text-align: left;
+  min-width: 50px; /* ajusta según el tamaño que necesites */
+  display: inline-block;
+}
+
 .quantity-header {
   text-align: center;
   font-weight: 600;
@@ -380,4 +386,44 @@
 .categories-section {
   display: flex;
   flex-direction: column;
+}
+.payment-options {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.payment-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cash-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.cash-btn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.card-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.card-btn:hover:not(:disabled) {
+  background-color: #1976d2;
+}
+
+.payment-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
