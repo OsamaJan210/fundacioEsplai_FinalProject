@@ -9,16 +9,11 @@
   font-size: 2rem;
   font-weight: bold;
 }
-
-
-
 .profile-columns {
   display: flex;
   gap: 50px;
   margin-top: 20px;
 }
-
-
 .profile-column {
   flex: 1;
 }
