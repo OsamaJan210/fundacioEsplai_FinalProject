@@ -11,6 +11,10 @@ export default function TopNavbar() {
 
   const userName = localStorage.getItem("userName") || "User";
 
+  // Obtener screens desde localStorage y comprobar si contiene POS
+  const screenData = localStorage.getItem("screen") || "";
+  const hasPOS = screenData.includes("POS");
+
   const handleSignOut = () => {
     localStorage.removeItem("userName");
     localStorage.removeItem("businessId");
@@ -31,11 +35,13 @@ export default function TopNavbar() {
 
   return (
     <nav className="top-navbar">
-      <div className="pos-button-container">
-        <Link to="/pos" className="pos-button">
-          POS
-        </Link>
-      </div>
+      {hasPOS && (
+        <div className="pos-button-container">
+          <Link to="/pos" className="pos-button">
+            POS
+          </Link>
+        </div>
+      )}
 
       <div className="welcome-text-container">
         <span>Welcome {userName}</span>
@@ -45,7 +51,11 @@ export default function TopNavbar() {
         <FaUserCircle size={42} className="profile-icon" />
         {showMenu && (
           <div className="navbar-dropdown" onClick={stopPropagation}>
-            <Link to="/settings" className="dropdown-link" onClick={stopPropagation}>
+            <Link
+              to="/settings"
+              className="dropdown-link"
+              onClick={stopPropagation}
+            >
               <FaCog style={{ marginRight: 8 }} />
               Settings
             </Link>
@@ -65,11 +75,17 @@ export default function TopNavbar() {
               </div>
               {showLanguages && (
                 <div className="language-dropdown">
-                  <div className="language-option" onClick={() => changeLanguage("en")}>
+                  <div
+                    className="language-option"
+                    onClick={() => changeLanguage("en")}
+                  >
                     <img src="/en.png" alt="English" className="flag-icon" />
                     English
                   </div>
-                  <div className="language-option" onClick={() => changeLanguage("es")}>
+                  <div
+                    className="language-option"
+                    onClick={() => changeLanguage("es")}
+                  >
                     <img src="/es.png" alt="Español" className="flag-icon" />
                     Español
                   </div>

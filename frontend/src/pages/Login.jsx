@@ -54,6 +54,7 @@ export default function Login() {
       if (data.name && data.businessId) {
         localStorage.setItem("userName", data.name);
         localStorage.setItem("businessId", data.businessId);
+        localStorage.setItem("screen",data.screen);
       }
 
       if (data.token) {
