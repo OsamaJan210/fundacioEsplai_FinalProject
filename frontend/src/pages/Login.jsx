@@ -61,7 +61,7 @@ export default function Login() {
         localStorage.setItem("token", data.token);
       }
 
-      navigate("/dashboard");
+      navigate("/landing");
     } catch (err) {
       console.error("Login error:", err);
       setError("Server error. Please try again later.");

@@ -44,7 +44,7 @@ export default function TopNavbar() {
       )}
 
       <div className="welcome-text-container">
-        <span>Welcome {userName}</span>
+        <span>Welcome, {userName}👋</span>
       </div>
 
       <div className="profile-container" onClick={() => setShowMenu(!showMenu)}>

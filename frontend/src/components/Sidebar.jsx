@@ -7,7 +7,8 @@ import {
   FaCube,
   FaList,
   FaChevronDown,
-  FaChevronRight
+  FaChevronRight,
+  FaTachometerAlt // Nuevo icono para Dashboard
 } from "react-icons/fa";
 import "../styles/Sidebar.css";
 
@@ -16,30 +17,23 @@ export default function Sidebar() {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [screenData, setScreenData] = useState([]);
 
-  // Leer el localStorage y normalizar a minúsculas
- useEffect(() => {
-  const stored = localStorage.getItem("screen");
+  useEffect(() => {
+    const stored = localStorage.getItem("screen");
+    if (!stored) return;
 
-  if (!stored) return;
+    let screens = [];
+    try {
+      screens = JSON.parse(stored);
+    } catch {
+      const cleaned = stored
+        .replace(/[\[\]]/g, "")
+        .split(",")
+        .map(s => s.trim().replace(/^"?(.*?)"?$/, "$1"));
+      screens = cleaned;
+    }
+    setScreenData(screens.map(s => s.toLowerCase()));
+  }, []);
 
-  let screens = [];
-
-  try {
-    screens = JSON.parse(stored);
-  } catch {
-    // Arreglar formato [Product, Settings, POS, Dashboard]
-    const cleaned = stored
-      .replace(/[\[\]]/g, "") // quita corchetes
-      .split(",")
-      .map(s => s.trim().replace(/^"?(.*?)"?$/, "$1")); // quita comillas sobrantes
-    screens = cleaned;
-  }
-
-  setScreenData(screens.map(s => s.toLowerCase()));
-}, []);
-
-
-  // Abrir menú Products si la ruta está activa
   useEffect(() => {
     if (location.pathname.startsWith("/product") || location.pathname.startsWith("/category")) {
       setIsProductsOpen(true);
@@ -53,18 +47,25 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <Link to="/dashboard">
+        <Link to="/landing" className="logo-link">
           <img src="/logo-nombre.png" alt="Logo" className="logo-image" />
         </Link>
       </div>
 
       <nav className="sidebar-menu">
+        {/* Home */}
+        <Link to="/landing" className={location.pathname === "/landing" ? "active" : ""}>
+            <FaHome /> Home
+        </Link>
+
+        {/* Dashboard */}
         {screenData.includes("dashboard") && (
           <Link to="/dashboard" className={location.pathname === "/dashboard" ? "active" : ""}>
-            <FaHome /> Dashboard
+            <FaTachometerAlt /> Dashboard
           </Link>
         )}
 
+        {/* Products */}
         {screenData.includes("product") && (
           <div className={`menu-item ${isProductsOpen ? "open" : ""}`}>
             <div className="menu-button-product" onClick={toggleProductsMenu}>
@@ -86,6 +87,7 @@ export default function Sidebar() {
           </div>
         )}
 
+        {/* Settings */}
         {screenData.includes("settings") && (
           <Link to="/settings-busines" className={location.pathname === "/settings-busines" ? "active" : ""}>
             <FaCog /> Settings
