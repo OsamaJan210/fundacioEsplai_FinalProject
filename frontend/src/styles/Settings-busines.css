@@ -62,7 +62,15 @@
   transition: border-color 0.3s ease;
   max-height: 3vh;
 }
-
+.company-page-container select {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 280px;
+  transition: border-color 0.3s ease;
+}
 .company-page-container input[type="text"]:focus,
 .company-page-container input[type="email"]:focus {
   border-color: #0b3d91;

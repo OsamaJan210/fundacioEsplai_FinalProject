@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaSave, FaTimes, FaEye, FaEyeSlash } from "react-icons/fa";
 import "../styles/Settings-busines.css";
+import { Country, State, City } from "country-state-city";
+import postalCodesData from "../data/postalCodes.js";
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -27,7 +30,7 @@ export default function CompanyPage() {
   const [company, setCompany] = useState(null);
   const [users, setUsers] = useState([]);
   const [modalMode, setModalMode] = useState(null);
-  const [companyForm, setCompanyForm] = useState({ address: "", phone: "" });
+  const [companyForm, setCompanyForm] = useState({ address: "", phone: "", city: "", state: "", postalCode: "", country: "", });
   const [showPassword, setShowPassword] = useState(false);
 
   // Form state for Add User modal
@@ -45,17 +48,43 @@ export default function CompanyPage() {
     fullName: "",
     permissions: [],
   });
+  const getPostalCode = (country, state, city) => {
+    if (!country || !state || !city) return "";
+    const countryData = postalCodesData[country];
+    if (!countryData) return "";
+    const stateData = countryData[state];
+    if (!stateData) return "";
+    return stateData[city] || "";
+  };
+
 
   const permissionsList = ["Product", "Settings", "POS", "Dashboard"];
 
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [modalError, setModalError] = useState("");
+  // Obtener el isoCode del country según el valor que viene de la API
+  const countryIso = Country.getAllCountries().find(
+    (c) => c.name === companyForm.country
+  )?.isoCode;
+
+  // Obtener todos los estados del país
+  const states = countryIso ? State.getStatesOfCountry(countryIso) : [];
+
+  // Obtener el isoCode del state según el valor que viene de la API
+  const stateIso = states.find((s) => s.name === companyForm.state)?.isoCode;
+
+  // Obtener todas las ciudades del state
+  const cities = countryIso && stateIso ? City.getCitiesOfState(countryIso, stateIso) : [];
+
+
 
 
   useEffect(() => {
     const businessId = localStorage.getItem("businessId");
     const token = localStorage.getItem("token");
+    const postalCode = getPostalCode(companyForm.country, companyForm.state, companyForm.city);
+    setCompanyForm(prev => ({ ...prev, postalCode }));
 
     if (!businessId || !token) {
       console.error("Missing businessId or token.");
@@ -89,6 +118,7 @@ export default function CompanyPage() {
           address: parsed.address || "",
           phone: parsed.phone || "",
         });
+        console.log("Company data:", parsed);
       } catch (error) {
         console.error("Error fetching company info:", error);
       }
@@ -127,9 +157,13 @@ export default function CompanyPage() {
     setCompanyForm({
       address: company?.address || "",
       phone: company?.phone || "",
+      country: company?.country || "",
+      state: company?.state || "",
+      city: company?.city || "",
     });
     setModalMode("editCompany");
   };
+
   const toggleEditPermission = (perm) => {
     setEditUserForm((prev) => {
       if (prev.permissions.includes(perm)) {
@@ -446,6 +480,7 @@ export default function CompanyPage() {
       </section>
 
       {/* Modal Edit Company */}
+      {/* Modal Edit Company */}
       {modalMode === "editCompany" && (
         <div className="modal-backdrop" onClick={closeModal}>
           <div
@@ -493,20 +528,66 @@ export default function CompanyPage() {
               </label>
               <label>
                 Country:
-                <input type="text" value={company?.country || ""} disabled />
+                <select
+                  value={companyForm.country}
+                  onChange={(e) =>
+                    setCompanyForm({ country: e.target.value, state: "", city: "" })
+                  }
+                >
+                  {companyForm.country && <option value={companyForm.country}>{companyForm.country}</option>}
+                  {Country.getAllCountries().map((c) => (
+                    <option key={c.isoCode} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
               </label>
+
               <label>
                 State:
-                <input type="text" value={company?.state || ""} disabled />
+                <select
+                  value={companyForm.state}
+                  onChange={(e) =>
+                    setCompanyForm((prev) => ({ ...prev, state: e.target.value, city: "" }))
+                  }
+                  disabled={!countryIso}
+                >
+                  {companyForm.state && <option value={companyForm.state}>{companyForm.state}</option>}
+                  {states.map((s) => (
+                    <option key={s.isoCode} value={s.name}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
               </label>
+
               <label>
                 City:
-                <input type="text" value={company?.city || ""} disabled />
+                <select
+                  value={companyForm.city}
+                  onChange={(e) =>
+                    setCompanyForm((prev) => ({ ...prev, city: e.target.value }))
+                  }
+                  disabled={!stateIso}
+                >
+                  {companyForm.city && <option value={companyForm.city}>{companyForm.city}</option>}
+                  {cities.map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
               </label>
+
               <label>
                 Postal Code:
-                <input type="text" value={company?.postalCode || ""} disabled />
+                <input
+                  type="text"
+                  value={companyForm.postalCode}
+                  readOnly
+                />
               </label>
+
             </div>
 
             <div className="form-buttons">
