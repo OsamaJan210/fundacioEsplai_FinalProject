@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "../styles/Landing.css";
+import { translations } from "../translations";
 
-export default function LandingPage() {
+export default function LandingPage({ lang = "en" }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -9,28 +10,26 @@ export default function LandingPage() {
     return () => clearInterval(timer);
   }, []);
 
+  const t = translations[lang] || translations["en"];
+
   return (
     <div className="landing-container">
-      {/* Header */}
       <header className="landing-header">
-        <img src="/logo-nombre.png" alt="Business Essential Logo" className="landing-logo" />
-         {/* Clock */}
-      <section className="landing-clock">
-        <div className="clock-display">
-          <span>{time.toLocaleTimeString()}</span>
-        </div>
-      </section>
+        <img
+          src="/logo-nombre.png"
+          alt={`${t.landingTitle} Logo`}
+          className="landing-logo"
+        />
+        <section className="landing-clock">
+          <div className="clock-display">
+            <span>{time.toLocaleTimeString()}</span>
+          </div>
+        </section>
       </header>
 
-      {/* Description */}
       <section className="landing-info">
-        <p>
-          <strong>Business Essential</strong> provides digital solutions tailored for small businesses.
-          Our services help manage payments, create and manage user accounts,
-          and make information handling easier and more efficient.
-          We aim to streamline your operations, boost productivity,
-          and empower small businesses to grow in a simple and effective way.
-        </p>
+        <h1>{t.landingTitle}</h1>
+        <p>{t.landingDescription}</p>
       </section>
     </div>
   );

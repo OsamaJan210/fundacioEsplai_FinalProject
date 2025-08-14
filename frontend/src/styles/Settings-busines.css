@@ -60,6 +60,7 @@
   width: 100%;
   max-width: 280px;
   transition: border-color 0.3s ease;
+  max-height: 3vh;
 }
 
 .company-page-container input[type="text"]:focus,
@@ -119,7 +120,7 @@
 .company-page-container .grid-table-company {
   margin-top: 40px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   border-radius: 6px;
   overflow: hidden;
   gap: 10px;

@@ -38,11 +38,20 @@ export default function CompanyPage() {
     fullName: "",
     permissions: [],
   });
+  const [editUserForm, setEditUserForm] = useState({
+    id: "",
+    username: "",
+    email: "",
+    fullName: "",
+    permissions: [],
+  });
 
   const permissionsList = ["Product", "Settings", "POS", "Dashboard"];
 
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [modalError, setModalError] = useState("");
+
 
   useEffect(() => {
     const businessId = localStorage.getItem("businessId");
@@ -55,26 +64,27 @@ export default function CompanyPage() {
 
     const fetchCompany = async () => {
       try {
-        const response = await fetch(
-          `${API_URL}/smartflow-api/v1/business/get/${businessId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${API_URL}/smartflow-api/v1/business/get/${businessId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) throw new Error("Failed to fetch company info");
 
         const json = await response.json();
-        const rawData = json.data;
-        const parsed = parseSfBusinessString(rawData);
+        const rawData = json.data || {};
+        const parsed = parseSfBusinessString(rawData) || {};
 
         setCompany({
           name: parsed.businessName || "",
           NIE: parsed.taxId || "",
+          country: parsed.country || "",
+          city: parsed.city || "",
+          state: parsed.state || "",
+          postalCode: parsed.postalCode || "",
           email: parsed.email || "",
           address: parsed.address || "",
           phone: parsed.phone || "",
@@ -84,29 +94,34 @@ export default function CompanyPage() {
       }
     };
 
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(
-          `${API_URL}/smartflow-api/v1/user/getAllByBusinessId/${businessId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) throw new Error("Failed to fetch users");
-
-        const data = await response.json();
-        setUsers(data.data || []);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
     fetchCompany();
     fetchUsers();
   }, []);
+
+
+  const fetchUsers = async () => {
+    try {
+      const businessId = localStorage.getItem("businessId");
+      const token = localStorage.getItem("token");
+      if (!businessId || !token) return;
+
+      const response = await fetch(
+        `${API_URL}/smartflow-api/v1/user/getAllByBusinessId/${businessId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to fetch users");
+
+      const data = await response.json();
+      console.log("Fetched users:", data);
+      setUsers(data.data || []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+
 
   const openEditCompanyModal = () => {
     setCompanyForm({
@@ -115,6 +130,56 @@ export default function CompanyPage() {
     });
     setModalMode("editCompany");
   };
+  const toggleEditPermission = (perm) => {
+    setEditUserForm((prev) => {
+      if (prev.permissions.includes(perm)) {
+        return { ...prev, permissions: prev.permissions.filter((p) => p !== perm) };
+      } else {
+        return { ...prev, permissions: [...prev.permissions, perm] };
+      }
+    });
+  };
+
+  const saveEditedUser = async () => {
+    const token = localStorage.getItem("token");
+    const payload = {
+      userId: editUserForm.id,
+      screenList: permissionsList.map((screenName) => ({
+        screenName,
+        allowed: editUserForm.permissions.includes(screenName),
+      })),
+    };
+
+    try {
+      const response = await fetch(`${API_URL}/smartflow-api/v1/user/editScreenAllowd`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (data.erc === "0") {
+        // Hubo un error, mostramos mensaje y NO cerramos modal
+        setModalError(data.msg || "Error updating user");
+        return;
+      }
+
+      // Si todo va bien, actualizamos usuario y cerramos modal
+      setUsers((prev) =>
+        prev.map((u) => (u.id === editUserForm.id ? { ...u, ...editUserForm } : u))
+      );
+      setModalMode(null);
+      setModalError(""); // Limpiar error
+    } catch (error) {
+      console.error("Error updating user:", error);
+      setModalError("Error updating user. Try again later.");
+    }
+  };
+
 
   const saveCompany = () => {
     setCompany((prev) => ({
@@ -238,6 +303,8 @@ export default function CompanyPage() {
 
         setUsers((prev) => [...prev, { ...newUserForm, id: result.data?.id || Date.now() }]);
         setModalMode(null);
+        fetchUsers(); // Refresh user list
+
       } catch (error) {
         console.error("Error creating user:", error);
       }
@@ -245,11 +312,49 @@ export default function CompanyPage() {
       // Email existe, no crear
       setEmailError("This email is already registered.");
     }
+
   };
 
   const closeModal = () => {
     setModalMode(null);
   };
+  const openEditUserModal = async (user) => {
+    const token = localStorage.getItem("token");
+    console.log(user.userId); // 
+    try {
+      const response = await fetch(
+        `${API_URL}/smartflow-api/v1/user/getScreenAllowdById/${user.userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to fetch user permissions");
+
+      const data = await response.json();
+      // console.log("User permissions data:", data);
+      const allowedPermissions = data.data
+        .filter(([screenName, allowed]) => allowed)
+        .map(([screenName]) => screenName);
+
+      setEditUserForm({
+        id: user.userId,
+        username: user.username,
+        email: user.email,
+        fullName: user.fullName || "",
+        permissions: allowedPermissions,
+      });
+
+      setModalMode("editUser");
+    } catch (error) {
+      console.error("Error fetching user permissions:", error);
+    }
+  };
+
+
+
 
   return (
     <div className="company-page-container">
@@ -275,6 +380,12 @@ export default function CompanyPage() {
             <p>
               <strong>NIE:</strong> {company?.NIE || ""}
             </p>
+            <p>
+              <strong>Country:</strong> {company?.country || ""}
+            </p>
+            <p>
+              <strong>City:</strong> {company?.city || ""}
+            </p>
           </div>
           <div className="right-column">
             <p>
@@ -285,6 +396,12 @@ export default function CompanyPage() {
             </p>
             <p>
               <strong>Email:</strong> {company?.email || ""}
+            </p>
+            <p>
+              <strong>State:</strong> {company?.state || ""}
+            </p>
+            <p>
+              <strong>Postal Code:</strong> {company?.postalCode || ""}
             </p>
           </div>
         </div>
@@ -301,12 +418,23 @@ export default function CompanyPage() {
         <div className="grid-table-company">
           <div className="grid-header-company">Name</div>
           <div className="grid-header-company">Email</div>
+          <div className="grid-header-company">Actions</div>
 
           {users.length > 0 ? (
             users.map((user, index) => (
               <React.Fragment key={user.id || index}>
                 <div className="grid-cell-company">{user.fullName || user.username}</div>
                 <div className="grid-cell-company">{user.email}</div>
+                <div className="grid-cell-company">
+                  <button
+                    className="btn edit-btn"
+                    onClick={() => openEditUserModal(user)}
+                  >
+                    <FaEdit style={{ marginRight: 6 }} /> Edit
+                  </button>
+
+
+                </div>
               </React.Fragment>
             ))
           ) : (
@@ -362,6 +490,22 @@ export default function CompanyPage() {
                   value={companyForm.phone}
                   onChange={(e) => setCompanyForm((prev) => ({ ...prev, phone: e.target.value }))}
                 />
+              </label>
+              <label>
+                Country:
+                <input type="text" value={company?.country || ""} disabled />
+              </label>
+              <label>
+                State:
+                <input type="text" value={company?.state || ""} disabled />
+              </label>
+              <label>
+                City:
+                <input type="text" value={company?.city || ""} disabled />
+              </label>
+              <label>
+                Postal Code:
+                <input type="text" value={company?.postalCode || ""} disabled />
               </label>
             </div>
 
@@ -474,6 +618,73 @@ export default function CompanyPage() {
           </div>
         </div>
       )}
+      {modalMode === "editUser" && (
+        <div className="modal-backdrop" onClick={closeModal}>
+          <div
+            className="company-modal-add"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2>
+                <FaEdit style={{ marginRight: "6px" }} /> Edit User Permissions
+              </h2>
+              <button
+                className="modal-close-btn"
+                onClick={closeModal}
+                aria-label="Close modal"
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="modal-grid">
+              <label>
+                Full Name:
+                <input type="text" value={editUserForm.fullName} disabled />
+              </label>
+
+              <label>
+                Username:
+                <input type="text" value={editUserForm.username} disabled />
+              </label>
+
+              <label>
+                Email:
+                <input type="email" value={editUserForm.email} disabled />
+              </label>
+
+              <div className="permissions-section">
+                <h3>Permissions</h3>
+                {permissionsList.map((perm) => (
+                  <label key={perm} style={{ display: "block" }}>
+                    <input
+                      type="checkbox"
+                      checked={editUserForm.permissions.includes(perm)} // o newUserForm.permissions para Add User
+                      onChange={() => toggleEditPermission(perm)} // función para actualizar el estado
+                    />
+                    {perm}
+                  </label>
+                ))}
+                {modalError && (
+                  <p style={{ color: "red", marginTop: "8px" }}>{modalError}</p>
+                )}
+
+              </div>
+            </div>
+
+            <div className="form-buttons">
+              <button onClick={saveEditedUser} className="btn save-btn">
+                <FaSave style={{ marginRight: 6 }} /> Save
+              </button>
+              <button onClick={closeModal} className="btn cancel-btn">
+                <FaTimes style={{ marginRight: 6 }} /> Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 }

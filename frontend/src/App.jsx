@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -15,34 +15,34 @@ import Landing from "./pages/Landing";
 import Sidebar from "./components/Sidebar";
 import TopNavbar from "./components/Navbar";
 
-import "./i18n";
-
 function AppWrapper() {
   const location = useLocation();
-  // Agregamos "/pos" a las rutas donde ocultamos Navbar y Sidebar
+  const [lang, setLang] = useState("en"); // Estado global de idioma
+
   const hideNavbarRoutes = ["/", "/register", "/registerUser", "/pos"];
 
   return (
     <div className="app-container">
-      {!hideNavbarRoutes.includes(location.pathname) && <Sidebar />}
+      {!hideNavbarRoutes.includes(location.pathname) && <Sidebar lang={lang} />}
 
-      <div className="content-wrapper">
-        {!hideNavbarRoutes.includes(location.pathname) && <TopNavbar />}
+      {/* Main content area */}
 
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/registerUser" element={<RegisterUser />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/pos" element={<Pos />} />
-            <Route path="/product" element={<Product />} />
-            <Route path="/landing" element={<Landing />} />
-            <Route path="/category" element={<Category />} />
-            <Route path="/settings-busines" element={<SettingsBussines />} />
-            <Route path="/settings" element={<Settings />} />
-          </Routes>
-        </main>
+      <div className="main-content">
+        {!hideNavbarRoutes.includes(location.pathname) && (
+          <TopNavbar lang={lang} setLang={setLang} />
+        )}
+        <Routes>
+          <Route path="/settings" element={<Settings lang={lang} />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/registerUser" element={<RegisterUser />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/pos" element={<Pos />} />
+          <Route path="/product" element={<Product />} />
+          <Route path="/category" element={<Category />} />
+          <Route path="/settings-busines" element={<SettingsBussines lang={lang} />} />
+          <Route path="/landing" element={<Landing lang={lang}/>} />
+        </Routes>
       </div>
     </div>
   );
