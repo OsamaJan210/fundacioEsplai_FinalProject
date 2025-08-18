@@ -30,7 +30,14 @@ export default function CompanyPage() {
   const [company, setCompany] = useState(null);
   const [users, setUsers] = useState([]);
   const [modalMode, setModalMode] = useState(null);
-  const [companyForm, setCompanyForm] = useState({ address: "", phone: "", city: "", state: "", postalCode: "", country: "", });
+  const [companyForm, setCompanyForm] = useState({
+    address: "",
+    phone: "",
+    country: "",
+    state: "",
+    city: "",
+    postalCode: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
 
   // Form state for Add User modal
@@ -48,14 +55,15 @@ export default function CompanyPage() {
     fullName: "",
     permissions: [],
   });
-  const getPostalCode = (country, state, city) => {
-    if (!country || !state || !city) return "";
-    const countryData = postalCodesData[country];
-    if (!countryData) return "";
-    const stateData = countryData[state];
-    if (!stateData) return "";
-    return stateData[city] || "";
+  const getPostalCode = (countryName, stateName, cityName) => {
+    if (!countryName || !stateName || !cityName) return "";
+    const countryIso = Country.getAllCountries().find(c => c.name === countryName)?.isoCode;
+    if (!countryIso) return "";
+    const stateIso = State.getStatesOfCountry(countryIso).find(s => s.name === stateName)?.name;
+    if (!stateIso) return "";
+    return postalCodesData?.[countryIso]?.[stateIso]?.[cityName] || "";
   };
+
 
 
   const permissionsList = ["Product", "Settings", "POS", "Dashboard"];
@@ -80,16 +88,16 @@ export default function CompanyPage() {
 
 
 
+  // 1) Fetch de la empresa SOLO al montar
   useEffect(() => {
     const businessId = localStorage.getItem("businessId");
     const token = localStorage.getItem("token");
-    const postalCode = getPostalCode(companyForm.country, companyForm.state, companyForm.city);
-    setCompanyForm(prev => ({ ...prev, postalCode }));
 
     if (!businessId || !token) {
       console.error("Missing businessId or token.");
       return;
     }
+
 
     const fetchCompany = async () => {
       try {
@@ -104,6 +112,7 @@ export default function CompanyPage() {
         if (!response.ok) throw new Error("Failed to fetch company info");
 
         const json = await response.json();
+        console.log("Company info response:", json);
         const rawData = json.data || {};
         const parsed = parseSfBusinessString(rawData) || {};
 
@@ -129,6 +138,22 @@ export default function CompanyPage() {
   }, []);
 
 
+  useEffect(() => {
+    if (modalMode === "editCompany" && company) {
+      setCompanyForm({
+        address: company.address || "",
+        phone: company.phone || "",
+        country: company.country || "",
+        state: company.state || "",
+        city: company.city || "",
+        postalCode: company.postalCode || "", // 👈 ahora sí
+      });
+    }
+  }, [modalMode, company]);
+  ;
+
+
+
   const fetchUsers = async () => {
     try {
       const businessId = localStorage.getItem("businessId");
@@ -144,7 +169,7 @@ export default function CompanyPage() {
       if (!response.ok) throw new Error("Failed to fetch users");
 
       const data = await response.json();
-      console.log("Fetched users:", data);
+      // console.log("Fetched users:", data);
       setUsers(data.data || []);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -216,12 +241,45 @@ export default function CompanyPage() {
 
 
   const saveCompany = () => {
-    setCompany((prev) => ({
-      ...prev,
+    const token = localStorage.getItem("token");
+    const businessId = localStorage.getItem("businessId");
+
+    if (!token || !businessId) {
+      console.error("Missing token or businessId.");
+      return;
+    }
+
+    const payload = {
+      businessId: businessId,
       address: companyForm.address,
       phone: companyForm.phone,
-    }));
-    setModalMode(null);
+      country: companyForm.country,
+      state: companyForm.state,
+      city: companyForm.city,
+      postalCode: companyForm.postalCode,
+    };
+    console.log("Saving company with payload:", payload);
+    fetch(`${API_URL}/smartflow-api/v1/business/edit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.erc === "0") {
+          console.error("Error updating company:", data.msg);
+          return;
+        }
+        setCompany({ ...company, ...companyForm });
+        setModalMode(null);
+      })
+      .catch((error) => {
+        console.error("Error saving company:", error);
+      });
+
   };
 
   const openAddUserModal = () => {
@@ -480,7 +538,6 @@ export default function CompanyPage() {
       </section>
 
       {/* Modal Edit Company */}
-      {/* Modal Edit Company */}
       {modalMode === "editCompany" && (
         <div className="modal-backdrop" onClick={closeModal}>
           <div
@@ -530,15 +587,20 @@ export default function CompanyPage() {
                 Country:
                 <select
                   value={companyForm.country}
-                  onChange={(e) =>
-                    setCompanyForm({ country: e.target.value, state: "", city: "" })
-                  }
+                  onChange={(e) => {
+                    const country = e.target.value;
+                    setCompanyForm((prev) => ({
+                      ...prev,
+                      country,
+                      state: "",
+                      city: "",
+                      postalCode: "",
+                    }));
+                  }}
                 >
-                  {companyForm.country && <option value={companyForm.country}>{companyForm.country}</option>}
+                  <option value="">Select country</option>
                   {Country.getAllCountries().map((c) => (
-                    <option key={c.isoCode} value={c.name}>
-                      {c.name}
-                    </option>
+                    <option key={c.isoCode} value={c.name}>{c.name}</option>
                   ))}
                 </select>
               </label>
@@ -547,16 +609,19 @@ export default function CompanyPage() {
                 State:
                 <select
                   value={companyForm.state}
-                  onChange={(e) =>
-                    setCompanyForm((prev) => ({ ...prev, state: e.target.value, city: "" }))
-                  }
-                  disabled={!countryIso}
+                  onChange={(e) => {
+                    const state = e.target.value;
+                    setCompanyForm((prev) => ({
+                      ...prev,
+                      state,
+                      city: "",
+                      postalCode: "",
+                    }));
+                  }}
                 >
-                  {companyForm.state && <option value={companyForm.state}>{companyForm.state}</option>}
+                  <option value="">Select state</option>
                   {states.map((s) => (
-                    <option key={s.isoCode} value={s.name}>
-                      {s.name}
-                    </option>
+                    <option key={s.isoCode} value={s.name}>{s.name}</option>
                   ))}
                 </select>
               </label>
@@ -565,16 +630,18 @@ export default function CompanyPage() {
                 City:
                 <select
                   value={companyForm.city}
-                  onChange={(e) =>
-                    setCompanyForm((prev) => ({ ...prev, city: e.target.value }))
-                  }
-                  disabled={!stateIso}
+                  onChange={(e) => {
+                    const city = e.target.value;
+                    setCompanyForm((prev) => ({
+                      ...prev,
+                      city,
+                      postalCode: getPostalCode(prev.country, prev.state, city),
+                    }));
+                  }}
                 >
-                  {companyForm.city && <option value={companyForm.city}>{companyForm.city}</option>}
-                  {cities.map((city) => (
-                    <option key={city.name} value={city.name}>
-                      {city.name}
-                    </option>
+                  <option value="">Select city</option>
+                  {cities.map((c) => (
+                    <option key={c.name} value={c.name}>{c.name}</option>
                   ))}
                 </select>
               </label>
@@ -584,10 +651,15 @@ export default function CompanyPage() {
                 <input
                   type="text"
                   value={companyForm.postalCode}
-                  readOnly
+                  onChange={(e) =>
+                    setCompanyForm({ ...companyForm, postalCode: e.target.value })
+                  }
+                  placeholder="Enter postal code"
+                  disabled={!companyForm.city} // Solo deshabilitado si no hay ciudad
+                  maxLength={5} // máximo de dígitos
                 />
               </label>
-
+              {!companyForm.city}
             </div>
 
             <div className="form-buttons">
