@@ -1,0 +1,117 @@
+2025-08-12 09:09:16 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 7376 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 09:09:16 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 09:09:32 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 16.988 seconds (process running for 18.141)
+2025-08-12 09:16:06 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 09:16:07 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 09:36:14 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 10:04:36 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 10:32:36 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 10:33:00 - o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
+io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-08-09T10:41:22Z. Current time: 2025-08-12T08:33:00Z, a difference of 251498069 milliseconds.  Allowed clock skew: 0 milliseconds.
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:427)
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:529)
+	at io.jsonwebtoken.impl.DefaultJwtParser.parseClaimsJws(DefaultJwtParser.java:589)
+	at io.jsonwebtoken.impl.ImmutableJwtParser.parseClaimsJws(ImmutableJwtParser.java:173)
+	at com.rubsal.smartflow.utils.JwtUtil.extractUsername(JwtUtil.java:33)
+	at com.rubsal.smartflow.config.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:40)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:243)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:238)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:905)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1743)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-08-12 10:33:28 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 19832 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 10:33:28 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 10:33:37 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 9.993 seconds (process running for 10.53)
+2025-08-12 10:45:36 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 15604 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 10:45:36 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 10:45:42 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 7.019 seconds (process running for 7.637)
+2025-08-12 10:47:12 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 10:54:39 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 11928 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 10:54:39 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 10:54:45 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 6.951 seconds (process running for 7.369)
+2025-08-12 11:47:51 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 18528 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 11:47:51 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 11:47:58 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 7.653 seconds (process running for 8.234)
+2025-08-12 11:48:43 - o.h.e.jdbc.spi.SqlExceptionHelper - Table 'smartflow.sfuserpermission' doesn't exist
+2025-08-12 11:50:57 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 18248 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 11:50:57 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 11:51:03 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 6.93 seconds (process running for 7.352)
+2025-08-12 11:51:20 - o.h.e.jdbc.spi.SqlExceptionHelper - Table 'smartflow.sfuserpermission' doesn't exist
+2025-08-12 11:52:06 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 20528 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 11:52:06 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 11:52:12 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 6.876 seconds (process running for 7.419)
+2025-08-12 12:27:10 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 12:51:59 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 12:52:48 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 7552 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 12:52:48 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 12:52:55 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 7.586 seconds (process running for 8.112)
+2025-08-12 12:53:46 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 12:54:14 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 13:11:37 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 13:27:45 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 13:28:09 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 12612 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 13:28:09 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 13:28:16 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 7.654 seconds (process running for 8.215)
+2025-08-12 13:30:27 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 13:31:24 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 12880 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 13:31:24 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 13:31:31 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 7.406 seconds (process running for 7.924)
+2025-08-12 13:34:02 - c.r.s.controller.AuthController - Service method called using @Slf4j
+2025-08-12 13:39:03 - c.r.smartflow.SmartflowApplication - Starting SmartflowApplication using Java 17.0.12 with PID 11688 (E:\BootCamp\finalproject\server\target\classes started by Administrator in E:\BootCamp\finalproject\server)
+2025-08-12 13:39:03 - c.r.smartflow.SmartflowApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-12 13:39:10 - c.r.smartflow.SmartflowApplication - Started SmartflowApplication in 7.103 seconds (process running for 7.587)

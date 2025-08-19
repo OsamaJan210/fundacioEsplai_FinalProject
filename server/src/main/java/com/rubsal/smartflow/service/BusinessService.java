@@ -8,4 +8,7 @@ public interface BusinessService {
 
     public String createBusiness(BusinessUserDTO req);
     public String isEmailExsist(String email);
+    public String getById(Integer id);
+    public String editBusiness(BusinessUserDTO req);
+
 }

@@ -6,7 +6,6 @@ import lombok.*;
 @Entity
 @Table(name = "sf_user_permissions")
 @Data
-@Builder
 public class SfUserPermission extends BaseWithDateDomain {
 
     @Id
@@ -14,12 +13,22 @@ public class SfUserPermission extends BaseWithDateDomain {
     private Integer id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private Integer userId;
 
     @Column(name = "screen_name", nullable = false)
     private String screenName;
 
     @Column(nullable = false)
     private boolean allowed;
+
+    public SfUserPermission(){
+        
+    }
+    public SfUserPermission(String screenName, boolean allowed, Integer userId) {
+        this.screenName = screenName;
+        this.allowed = allowed;
+        this.userId = userId;
+    }
+    
 }
 

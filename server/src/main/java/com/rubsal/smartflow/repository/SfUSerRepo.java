@@ -12,6 +12,8 @@ public interface SfUSerRepo extends JpaRepository<SfUsers,Integer>{
     SfUsers findByEmailAndPassword(String email, String password);
     List<SfUsers> findByEmail(String email);
     List<SfUsers> findByUserId(Integer userId);
+    List<SfUsers> findByBusiness_BusinessId(Integer businessId);
+    
 
 
 }
