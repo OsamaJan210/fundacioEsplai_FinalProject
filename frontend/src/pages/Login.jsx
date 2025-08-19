@@ -54,13 +54,14 @@ export default function Login() {
       if (data.name && data.businessId) {
         localStorage.setItem("userName", data.name);
         localStorage.setItem("businessId", data.businessId);
+        localStorage.setItem("screen",data.screen);
       }
 
       if (data.token) {
         localStorage.setItem("token", data.token);
       }
 
-      navigate("/dashboard");
+      navigate("/landing");
     } catch (err) {
       console.error("Login error:", err);
       setError("Server error. Please try again later.");

@@ -1,6 +1,6 @@
 .top-navbar {
   height: 70px;
-  background-color: #fff;
+  background-color: #f8f9fa;
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
@@ -33,7 +33,7 @@
 }
 
 .welcome-text-container {
-  font-size: 2.3rem;
+  font-size: 2rem;
   font-weight: 600;
   color: #333;
 }

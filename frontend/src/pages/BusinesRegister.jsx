@@ -64,7 +64,7 @@ export default function Register() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === "postalCode") {
+    if (name === "postalCode" || name === "phone") {
       if (/^\d*$/.test(value)) {
         setForm({ ...form, [name]: value });
       }
@@ -76,19 +76,18 @@ export default function Register() {
     }
   };
 
+  // Guardar country, state, city y postalCode en form
   useEffect(() => {
-    if (selectedCountry && selectedState && selectedCity) {
-      const countryCode = selectedCountry.value;
-      const stateName = selectedState.name;
-      const cityName = selectedCity.value;
-
-      const postalCode =
-        postalCodesData?.[countryCode]?.[stateName]?.[cityName] || "";
-
-      setForm((form) => ({ ...form, postalCode }));
-    } else {
-      setForm((form) => ({ ...form, postalCode: "" }));
-    }
+    setForm((form) => ({
+      ...form,
+      country: selectedCountry ? selectedCountry.label : "",
+      state: selectedState ? selectedState.label : "",
+      city: selectedCity ? selectedCity.label : "",
+      postalCode:
+        selectedCountry && selectedState && selectedCity
+          ? postalCodesData?.[selectedCountry.value]?.[selectedState.name]?.[selectedCity.value] || ""
+          : "",
+    }));
   }, [selectedCountry, selectedState, selectedCity]);
 
   const handleSubmit = async (e) => {
@@ -97,7 +96,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const url = `${API_URL}/smartflow-api/V1/Business/isEmailExsist?email=${encodeURIComponent(
+      const url = `${API_URL}/auth/isEmailExsist?email=${encodeURIComponent(
         form.businessEmail
       )}`;
       const response = await fetch(url, {
@@ -114,11 +113,14 @@ export default function Register() {
       if (data.msg === "email already exsist" && data.erc === "1") {
         setError("This email is already registered.");
       } else {
+        // console.log("Datos a guardar en localStorage:", form); // <-- console.log aquí
+        localStorage.setItem("businessData", JSON.stringify(form));
         navigate("/registerUser");
       }
+
     } catch (error) {
       setError("Error checking email. Please try again.");
-      console.error("Email check failed:", error);
+      // console.error("Email check failed:", error);
     } finally {
       setLoading(false);
     }
@@ -161,12 +163,7 @@ export default function Register() {
               type="text"
               placeholder="Phone"
               value={form.phone}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (/^\d*$/.test(value)) {
-                  setForm({ ...form, phone: value });
-                }
-              }}
+              onChange={handleChange}
               required
             />
           </div>
@@ -243,6 +240,7 @@ export default function Register() {
               maxLength={10}
             />
           </div>
+
           <div className="input-group">
             <FaIdCard className="icon" />
             <input
@@ -255,6 +253,7 @@ export default function Register() {
               required
             />
           </div>
+
           <button type="submit" className="btn-submit" disabled={loading}>
             {loading ? "Checking..." : "Next"}
           </button>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Pos.css";
+import { FaMoneyBillWave, FaCreditCard } from "react-icons/fa";
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,6 +15,8 @@ export default function Pos() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState("");
   const [orderItems, setOrderItems] = useState([]);
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -94,10 +98,8 @@ export default function Pos() {
     setQuantity("");
   };
 
-  // Solo cambia cantidad si hay producto seleccionado
   const handleKeypadClick = (key) => {
-    if (!selectedProduct) return; // No hacer nada si no hay producto
-
+    if (!selectedProduct) return;
     if (key === "x") {
       setQuantity("");
     } else {
@@ -109,13 +111,18 @@ export default function Pos() {
   };
 
   const handleInputChange = (e) => {
-    if (!selectedProduct) return; // No cambiar si no hay producto
+    if (!selectedProduct) return;
     const val = e.target.value;
     if (/^\d*\.?\d*$/.test(val) || val === "") setQuantity(val);
   };
 
   const handleCheck = () => {
-    if (!selectedProduct || !quantity || isNaN(parseFloat(quantity)) || parseFloat(quantity) <= 0) {
+    if (
+      !selectedProduct ||
+      !quantity ||
+      isNaN(parseFloat(quantity)) ||
+      parseFloat(quantity) <= 0
+    ) {
       return;
     }
 
@@ -129,6 +136,8 @@ export default function Pos() {
         name: selectedProduct.name,
         quantity: qty,
         totalPrice: totalPrice,
+        unitPrice: selectedProduct.price,
+        taxAmount: selectedProduct.taxAmount || 0,
       },
     ]);
 
@@ -136,33 +145,93 @@ export default function Pos() {
     setQuantity("");
   };
 
+  const handleSettleClick = () => {
+    if (orderItems.length === 0) return;
+    setShowPaymentOptions(true);
+  };
+
+  const handlePayment = async (method) => {
+    setLoading(true);
+    setShowPaymentOptions(false);
+
+    const taxAmount = orderItems.reduce(
+      (acc, item) => acc + item.taxAmount * item.quantity,
+      0
+    );
+    const subtotal = orderItems.reduce((acc, item) => acc + item.totalPrice, 0);
+    const totalAmount = subtotal + taxAmount;
+
+    const payload = {
+      customerId: null,
+      totalAmount: parseFloat(totalAmount.toFixed(2)),
+      taxAmount: parseFloat(taxAmount.toFixed(2)),
+      discountAmount: 0,
+      paymentMethod: method,
+      items: orderItems.map((item) => ({
+        productId: item.id,
+        productName: item.name,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      })),
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No auth token found");
+
+      const res = await fetch(`${API_URL}/smartflow-api/v1/sale/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error("Error registering sale: " + errorText);
+      }
+
+      const data = await res.json();
+      console.log("Venta registrada:", data);
+
+      setOrderItems([]);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al registrar la venta: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="pos-container">
       <div className="pos-main">
         <div className="sidebar-buttons">
-          {["Change Table", "Select Customer", "Ticket Note", "Print Bill", "Add Ticket"].map(
-            (btn, idx) => (
-              <button
-                key={idx}
-                disabled={btn === "Add Ticket"}
-                className={`sidebar-btn ${btn === "Add Ticket" ? "disabled-btn" : ""}`}
-              >
-                {btn}
-              </button>
-            )
-          )}
+          {[
+            "Select Customer",
+            "Ticket Note",
+            "Print Bill", 
+          ].map((btn, idx) => (
+            <button
+              key={idx}
+              disabled={btn === "Add Ticket"}
+              className={`sidebar-btn ${btn === "Add Ticket" ? "disabled-btn" : ""}`}
+            >
+              {btn}
+            </button>
+          ))}
         </div>
+
         <div className="orders-panel">
           <div className="order-summary">
-            {/* Header tipo tabla */}
             <div className="order-header-grid">
               <span className="quantity-header">Q</span>
               <span className="product-name-header">Name</span>
               <span className="price-header">$</span>
             </div>
-
             <hr />
-
             <ul className="order-list">
               {orderItems.length === 0 && <li>No items in order.</li>}
               {orderItems.map((item, idx) => (
@@ -179,22 +248,51 @@ export default function Pos() {
             <div className="balance-outside">
               <strong className="balance-label">Balance:</strong>
               <strong className="balance-amount">
-                ${orderItems.reduce((acc, item) => acc + item.totalPrice, 0).toFixed(2)}
+                $
+                {orderItems
+                  .reduce((acc, item) => acc + item.totalPrice, 0)
+                  .toFixed(2)}
               </strong>
             </div>
 
             <div className="order-buttons">
-              <button className="settle-btn">Settle</button>
+              {!showPaymentOptions && (
+                <button
+                  className="settle-btn"
+                  onClick={handleSettleClick}
+                  disabled={loading || orderItems.length === 0}
+                >
+                  {loading ? "Processing..." : "Settle"}
+                </button>
+              )}
               <button className="close-btn-pos">Close</button>
             </div>
+
+            {showPaymentOptions && (
+              <div className="payment-options">
+                <button
+                  className="payment-btn cash-btn"
+                  onClick={() => handlePayment("CASH")}
+                  disabled={loading}
+                >
+                  <FaMoneyBillWave style={{ marginRight: 8 }} />
+                  Cash
+                </button>
+                <button
+                  className="payment-btn card-btn"
+                  onClick={() => handlePayment("CARD")}
+                  disabled={loading}
+                >
+                  <FaCreditCard style={{ marginRight: 8 }} />
+                  Card
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-
-        {/* Categories + Products + Keypad */}
         <div className="categories-products-keypad">
           <div className="cat-prod-keypad-container">
-            {/* Search & Categories */}
             <div className="categories-list-vertical">
               <div className="search-bar">
                 <input
@@ -215,9 +313,7 @@ export default function Pos() {
               ))}
             </div>
 
-            {/* Products + Keypad */}
             <div className="products-and-keypad">
-              {/* Product Search */}
               <div className="search-bar">
                 <input
                   type="text"
@@ -227,7 +323,6 @@ export default function Pos() {
                 />
               </div>
 
-              {/* Products */}
               <div className="products-grid">
                 {filteredProducts.map((prod) => (
                   <button
@@ -241,13 +336,18 @@ export default function Pos() {
                 ))}
               </div>
 
-              {/* Keypad */}
               <div className="keypad-container">
                 <div className="keypad-input-row">
                   <input
                     type="text"
                     className="keypad-input"
-                    placeholder={selectedProduct ? "Enter quantity" : "Select a product first"}
+                    placeholder={
+                      selectedProduct
+                        ? selectedProduct.sellingUnit === "KG"
+                          ? "Enter weight"
+                          : "Enter quantity"
+                        : "Select a product first"
+                    }
                     value={quantity}
                     onChange={handleInputChange}
                   />
@@ -255,14 +355,21 @@ export default function Pos() {
                     <button className="keypad-btn" onClick={handleCheck}>
                       ✔
                     </button>
-                    <button className="keypad-btn" onClick={() => setQuantity("")}>
+                    <button
+                      className="keypad-btn"
+                      onClick={() => setQuantity("")}
+                    >
                       ✖
                     </button>
                   </div>
                 </div>
                 <div className="keypad-grid">
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0, "x"].map((key, idx) => (
-                    <button key={idx} className="keypad-btn key" onClick={() => handleKeypadClick(key)}>
+                    <button
+                      key={idx}
+                      className="keypad-btn key"
+                      onClick={() => handleKeypadClick(key)}
+                    >
                       {key}
                     </button>
                   ))}

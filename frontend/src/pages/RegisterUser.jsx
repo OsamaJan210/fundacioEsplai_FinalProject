@@ -23,47 +23,49 @@ export default function UserRegister() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(""); // error general
-  const [emailError, setEmailError] = useState(""); // error específico de email
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-
-    // Limpiar errores cuando cambie cualquier campo
     setError("");
-    if (name === "email") {
-      setEmailError("");
-    }
+    if (name === "email") setEmailError("");
   };
 
+  // Verificar si el email existe
   const checkEmailExists = async (email) => {
+    setIsCheckingEmail(true);
     try {
-      setIsCheckingEmail(true);
-      const url = `${API_URL}/smartflow-api/V1/User/isEmailExsist?email=${encodeURIComponent(email)}`;
+      const url = `${API_URL}/auth/isEmailExsistUser?email=${encodeURIComponent(email)}`;
       const response = await fetch(url);
-      const data = await response.json();
 
-
-      setIsCheckingEmail(false);
-      if (data.msg === "email not exsist" && data.erc === "1") {
-        return false; // No existe email, no hay error
-      } else {
-        return true; // Email existe
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    } catch (error) {
+
+      const data = await response.json();
+      console.log("Email check response:", data);
       setIsCheckingEmail(false);
-      console.error("Error checking email:", error);
+
+      if (data.msg?.trim().toLowerCase() === "email not exsist" && data.erc?.trim() === "1") {
+        return false; // Email no existe → se puede crear
+      } else {
+        return true; // Email ya registrado → bloquea creación
+      }
+    } catch (err) {
+      console.error("Error checking email:", err);
+      setIsCheckingEmail(false);
       setError("Error checking email. Please try again later.");
-      return true; 
+      return true; // Bloquea por seguridad
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validaciones básicas
+    // Validar campos de usuario
     if (!form.username || !form.email || !form.password || !form.fullName) {
       setError("All fields are required.");
       return;
@@ -74,16 +76,48 @@ export default function UserRegister() {
       return;
     }
 
-    // Verificar email en la API
+    // Comprobar si el email ya existe
     const emailExists = await checkEmailExists(form.email);
-
     if (emailExists) {
       setEmailError("This email is already registered.");
       return;
     }
 
-    // Si todo está bien, redirige al dashboard o siguiente página
-    navigate("/login");
+    // Recuperar datos de la empresa desde localStorage
+    const businessData = JSON.parse(localStorage.getItem("businessData"));
+    if (!businessData) {
+      setError("Business data is missing. Please complete business registration first.");
+      return;
+    }
+
+    // Combinar datos de empresa + usuario
+    const requestData = {
+      ...businessData,
+      username: form.username,
+      email: form.email,
+      password: form.password,
+      fullName: form.fullName,
+    };
+
+    console.log("Request Data to API:", requestData);
+
+    try {
+      const response = await fetch(`${API_URL}/auth/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        localStorage.removeItem("businessData"); // Limpiar datos de empresa
+        navigate("/");
+      } else {
+        setError(result.message || "Error creating account.");
+      }
+    } catch (err) {
+      setError("Unexpected error. Please try again.");
+    }
   };
 
   return (
@@ -127,9 +161,7 @@ export default function UserRegister() {
               disabled={isCheckingEmail}
             />
           </div>
-          {emailError && (
-            <span className="error-message-register">{emailError}</span>
-          )}
+          {emailError && <span className="error-message-register">{emailError}</span>}
 
           <div className="input-group-register password-group">
             <FaLock className="icon" />
