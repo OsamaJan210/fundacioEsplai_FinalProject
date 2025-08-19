@@ -21,7 +21,7 @@ export default function Pos() {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        navigate("/dashboard");
+        navigate("/landing");
       }
     };
     document.addEventListener("keydown", handleKeyDown);
