@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import ch.qos.logback.core.spi.ErrorCodes;
 
 @Component
-public class General {
+public class General<T>  {
     public JSONObject buildResponseOutput(String errorCode, String msg) {
         JSONObject res = new JSONObject();
         res.put("erc", errorCode);
@@ -16,6 +16,11 @@ public class General {
         return res;
     }
     public JSONObject buildResponseObject(List data) {
+        JSONObject res = new JSONObject();
+        res.put("data", data).put("erc", Constants.SUCCESS);
+        return res;
+    }
+    public JSONObject buildResponseObjectGeneral(T data) {
         JSONObject res = new JSONObject();
         res.put("data", data).put("erc", Constants.SUCCESS);
         return res;

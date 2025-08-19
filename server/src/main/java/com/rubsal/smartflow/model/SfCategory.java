@@ -30,7 +30,7 @@ public class SfCategory extends BaseWithDateDomain{
     @Column(name = "description")
     private String description;
 
-    @Column(name = "name", nullable = false, length = 255, unique = true)
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
 
     @Column(name = "business_id", nullable = false)

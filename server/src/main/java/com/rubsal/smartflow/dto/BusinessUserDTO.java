@@ -15,6 +15,7 @@ public class BusinessUserDTO {
     private String postalCode;
     private String country;
     private String taxId;
+    private Integer businessId;
 
     // User fields
     private String username;
