@@ -10,12 +10,77 @@
 }
 
 /* Título principal */
-.dashboard-title {
-  font-size: 2.5rem;
+.title-dashboard {
+  font-size: 3rem;
   font-weight: bold;
   color: #1f2937;
   margin-bottom: 32px;
+  text-align: center;
+
 }
+.date-filter {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  margin-bottom: 24px;
+}
+.date-filter label {
+  font-size: 1rem;
+  color: #374151;
+  font-weight: 500;
+  margin-right: 8px;
+}
+.date-filter input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #111827;
+  margin-left: 8px;
+}
+.date-filter input:focus {
+  border-color: #2563eb;
+  outline: none;
+}
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  margin-top: 2.5rem;
+  height: 15rem;
+  align-items: center;
+  
+}
+
+.header-row {
+  display: flex;
+  gap: 7rem;
+}
+
+.dashboard-item {
+  display: flex;
+  gap: 1rem; /* espacio entre title y value */
+  justify-content: center; /* centra horizontalmente */
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 320px; /* ancho fijo para cada item */
+  color: #111827; /* color del texto */
+  background-color: #f3f4f6; /* color de fondo claro */
+  border-bottom: 1px solid #ccc;
+  
+}
+.dashboard-title {
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.dashboard-value {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
 
 /* Grid para las gráficas */
 .dashboard-grid {
@@ -45,19 +110,3 @@
   text-align: center;
 }
 
-/* Para que los gráficos se vean bien en pantallas pequeñas */
-@media (max-width: 768px) {
-  .dashboard-container {
-    padding: 20px;
-  }
-
-  .dashboard-grid {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .chart-box {
-    width: 100%;
-    max-width: 100%;
-  }
-}
